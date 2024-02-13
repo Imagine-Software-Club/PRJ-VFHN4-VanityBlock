@@ -1,7 +1,9 @@
 import ListingCard from "@/src/components/ListingCard";
+import ListingPage from "@/app/listings/page";
 
 export default function Home() {
   return (
-    <ListingCard name = "test"/>
+    <ListingPage/>
+    // <ListingCard name = "test"/>
   );
 }

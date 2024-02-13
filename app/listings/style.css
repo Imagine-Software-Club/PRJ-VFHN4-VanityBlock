@@ -1,0 +1,98 @@
+.container {
+    background-color: white;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    bottom: 0%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    color: black;
+}
+
+.header {
+    background-color: grey;
+    width: 100%;
+    height: 10%;
+}
+
+.listing-info {
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 1%;
+}
+
+.main-content {
+    height: 100%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-column {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.info {
+    width: 100%;
+    height: 10%;
+    text-align: center;
+}
+
+.main-photo-container {
+    width: 100%;
+    height: 80%;
+}
+
+.main-photo {
+    width: 100%;
+    height: 100%;
+}
+
+.bid-info {
+    width: 100%;
+    height: 10%;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 2rem;
+    float: left;
+    height: 100%;
+    text-align: center;
+    display:flex;
+    align-items: center;
+}
+
+.location {
+    float: right;
+    height: 100%;
+    text-align: center;
+    display:flex;
+    align-items: center;
+    font-size: 1.5rem;
+    color: rgb(20, 20, 117);
+}
+
+.small-photo {
+    width: 49.5%;
+    height: 50%;
+    background-color: lightgrey;
+}
+
+.share {
+    width: 100%;
+    height: 10%;
+    display:flex;
+    align-items: center;
+    justify-content: end;
+}
