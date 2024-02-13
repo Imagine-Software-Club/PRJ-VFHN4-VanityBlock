@@ -6,6 +6,7 @@ import React,{useState} from "react";
 import { Box, FormControl,InputAdornment,Select, TextField,SelectChangeEvent } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import SearchIcon from '@mui/icons-material/Search';
+import { BorderColor } from "@mui/icons-material";
 
 
 
@@ -26,8 +27,9 @@ export default function MainMenuHeader() {
             <Grid md={2} sm={2} xs={12} >
                 <FormControl fullWidth>
                     <Select
-                    autoWidth
-                    defaultValue={"Live"}
+                        autoWidth
+                        defaultValue={"Live"}
+                        sx={{borderColor:"#1c1c1d"}}
                     
                     >
                         <option value={"Live"}>Live Auctions</option>
@@ -41,25 +43,29 @@ export default function MainMenuHeader() {
             <Grid md={3} sm={3} xs={12}>
                 <FormControl fullWidth>
                     <TextField 
-                    
-                    id="searchBar"
-                    InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start" >
-                            <SearchIcon></SearchIcon>
-                        </InputAdornment>
-                    ),
-                    }}
-                    variant="standard"
-                    placeholder="Search"
+                        variant="outlined"
+                        id="searchBar"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start" >
+                                    <SearchIcon htmlColor="#222e61"></SearchIcon>
+                                </InputAdornment>
+                            ),
+                            style:{
+                                color:"#9595a6"
+                            }
+                        }}
+                        placeholder="Search"
                     />      
                 </FormControl>
             </Grid>
-            <Grid md={1} sm={2} xs={12}>
+            <Grid md={1} sm={2} xs={12} fontSize={"medium"}>
                 <FormControl fullWidth>
                     <Select
-                    autoWidth
-                    defaultValue={"State"}>
+                        autoWidth
+                        defaultValue={"State"}
+                        
+                    >
                         <option value={"State"}>State</option>
                     </Select>
                 </FormControl>
