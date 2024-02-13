@@ -43,8 +43,8 @@ export default function ListingCard(props: any){
       <Box sx={{ position: 'relative' }}>
         <CardMedia
           component="img"
-          height="35%"
-          image="../../static/images/cards/PlateExample.jpg"
+          height="100%"
+          image="/images/PlateExample.jpg"
         />
         <Box
           sx={{
@@ -66,7 +66,9 @@ export default function ListingCard(props: any){
 
       <CardContent>
         <h1>
+          <b>
           <center> {props.name} </center>
+          </b>
         </h1>
       </CardContent>
     </Card>
