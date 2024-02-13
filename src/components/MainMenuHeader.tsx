@@ -10,6 +10,7 @@ import { BorderColor } from "@mui/icons-material";
 
 
 
+
 export default function MainMenuHeader() {
     const [age, setAge] = useState('Past');
 
@@ -30,6 +31,21 @@ export default function MainMenuHeader() {
                         autoWidth
                         defaultValue={"Live"}
                         sx={{borderColor:"#1c1c1d"}}
+                        sx={{
+                            color: "#1c1c1d",
+                            '.MuiOutlinedInput-notchedOutline': {
+                              border:"none"
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                border:"none",
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              border:"none",
+                            },
+                            '.MuiSvgIcon-root': {
+                              fill: "#1c1c1d !important",
+                            }
+                          }}
                     
                     >
                         <option value={"Live"}>Live Auctions</option>
@@ -56,6 +72,20 @@ export default function MainMenuHeader() {
                             }
                         }}
                         placeholder="Search"
+                        sx={{
+                            '.MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1c1c1d',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1c1c1d',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1c1c1d',
+                            },
+                            '.MuiSvgIcon-root': {
+                              fill: "#1c1c1d !important",
+                            }
+                          }}
                     />      
                 </FormControl>
             </Grid>
@@ -64,6 +94,21 @@ export default function MainMenuHeader() {
                     <Select
                         autoWidth
                         defaultValue={"State"}
+                        sx={{
+                            color: "#1c1c1d",
+                            '.MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1c1c1d',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1c1c1d',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#1c1c1d',
+                            },
+                            '.MuiSvgIcon-root': {
+                              fill: "#1c1c1d !important",
+                            }
+                          }}
                         
                     >
                         <option value={"State"}>State</option>
@@ -75,7 +120,23 @@ export default function MainMenuHeader() {
                 <FormControl fullWidth>
                     <Select
                     autoWidth
-                    defaultValue={"Ending Soon"}>
+                    defaultValue={"Ending Soon"}
+                    sx={{
+                        color: "#1c1c1d",
+                        '.MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1c1c1d',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1c1c1d',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#1c1c1d',
+                        },
+                        '.MuiSvgIcon-root': {
+                          fill: "#1c1c1d !important",
+                        }
+                      }}
+                    >
                         <option value={"Ending Soon"}>Ending Soon</option>
                         <option value={"Ending Last"}>Ending Last</option>
                         <option value={"Lowest Bid"}>Lowest Bid</option>
