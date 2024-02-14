@@ -13,17 +13,7 @@ export default function Homepage() {
   <Box
   >
     <MainMenuHeader/>
-    <Grid
-        container       
-        justifyContent="center"
-        alignItems="center"
-      >
-        {Array.from(Array(12)).map((_, index) => (
-          <Grid  key={index} xs={4}>
-            <ListingCard name={index}  justifyContent="center" alignItems="center" ></ListingCard>
-          </Grid>
-        ))}
-      </Grid>
+
 
   </Box>
 
