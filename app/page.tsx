@@ -9,23 +9,29 @@ export default function Homepage() {
 
   
   return ( 
+  <center>
+  
 
-  <Box
-  >
+  <Box>
     <MainMenuHeader/>
-    <Grid
-        container       
-        justifyContent="center"
-        alignItems="center"
-      >
+
+    <br></br>
+    <br></br>
+
+    <Grid container spacing={4} justifyContent="center">
         {Array.from(Array(12)).map((_, index) => (
-          <Grid  key={index} xs={4}>
-            <ListingCard name={index} time = {"Time Test"} price = {"Price Test"} justifyContent="center" alignItems="center" ></ListingCard>
+          <Grid key={index} item xs={12} sm={4} md={4} lg={4} xl={4}>
+            <ListingCard
+              name={`Item ${index}`}
+              time="Time"
+              price="Price"
+            />
           </Grid>
         ))}
       </Grid>
 
   </Box>
+  </center>
 
 
     
