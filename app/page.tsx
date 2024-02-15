@@ -10,15 +10,10 @@ export default function Homepage() {
 
   
   return ( 
-<<<<<<< HEAD
-  <Box
-  >
-=======
   <center>
   
 
   <Box>
->>>>>>> 342b1e9ca017aa190be5395bdf81e096e578e398
     <MainMenuHeader/>
 
     <br></br>
