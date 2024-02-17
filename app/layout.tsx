@@ -1,5 +1,9 @@
 import React from 'react'
+<<<<<<< HEAD
 import Navbar from '@/src/components/Navbar'
+=======
+import Navbar from './components/Navbar'
+>>>>>>> ced081341288af4d59f2486683f859c905c14d99
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -17,6 +21,12 @@ export const metadata = {
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
+<<<<<<< HEAD
+=======
+      <head>
+        {/* You can import Google Fonts directly into your CSS file */}
+      </head>
+>>>>>>> ced081341288af4d59f2486683f859c905c14d99
       <body className={inter.className}>
         <header>
           {/* Navbar Component */}
@@ -28,4 +38,8 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   );
 };
 
+<<<<<<< HEAD
 export default RootLayout;
+=======
+export default RootLayout;
+>>>>>>> ced081341288af4d59f2486683f859c905c14d99
