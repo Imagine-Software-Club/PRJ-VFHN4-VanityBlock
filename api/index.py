@@ -6,7 +6,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 app = FastAPI()
-cred = credentials.Certificate('./api/credentials.json')
+cred = credentials.Certificate("../api/credentials.json")
 
 firebase_admin.initialize_app(cred)
 

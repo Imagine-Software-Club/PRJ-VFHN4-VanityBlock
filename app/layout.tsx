@@ -17,9 +17,6 @@ export const metadata = {
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
-      <head>
-        {/* You can import Google Fonts directly into your CSS file */}
-      </head>
       <body className={inter.className}>
         <header>
           {/* Navbar Component */}
