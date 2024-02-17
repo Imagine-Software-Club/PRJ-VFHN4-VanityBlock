@@ -1,8 +1,5 @@
 @tailwind base;
 @tailwind components;
-<<<<<<< HEAD
-@tailwind utilities;
-=======
 @tailwind utilities;
 
 :root {
@@ -28,4 +25,3 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
->>>>>>> ced081341288af4d59f2486683f859c905c14d99
