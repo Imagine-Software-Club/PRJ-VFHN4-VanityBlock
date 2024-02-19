@@ -37,6 +37,30 @@ export default function Create() {
         console.log(formData);
 
         // API stuff goes here
+        try {
+            const response = await fetch('http://localhost:8000/listings', {  // Adjust the URL/port as needed
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log(data);
+            // Handle success response
+        } catch (error) {
+            console.error('Error posting listing:', error);
+            // Handle error
+        }
+
+        
+
+
     };
 
     return(
