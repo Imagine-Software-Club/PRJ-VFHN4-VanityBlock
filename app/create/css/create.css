@@ -16,6 +16,10 @@
     align-items: flex-start;
     flex-direction: column;
 }
+.container button{
+    align-self:center;
+    margin-bottom: 15px;
+}
 
 .information{
     font-family: Verdana;
@@ -44,17 +48,25 @@
 
 .input_row{
     display:flex;
+    background-color: none;
     /* align-items:center; */
 }
 .input_row button{
-    background-color:grey;
-    font-weight: normal;
-    color:black;
+    margin-top:10px;
+    margin-left:5px;
+    margin-right:10px;
+    justify-content: center;
+}
+.schedule_post{
+    margin-top:4px;
+    margin-bottom: 8px;
+    border:1px solid black;
     border-radius: 6px;
-    width:20%;
-    height:1%;
-    margin:4px;
-
+    width:25%;
+    color: none;
+    font-size: small;
+    font-weight:normal;
+    color: black;
 }
 
 .inputs{
