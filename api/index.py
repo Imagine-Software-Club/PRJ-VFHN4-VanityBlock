@@ -1,37 +1,20 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from datetime import datetime
+
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import ArrayUnion
-
-# from firestorm import get_firestore_db
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from pydantic import BaseModel
 
-class Listing(BaseModel):
-    firstName: str
-    lastName: str
-    email: str
-    zip: str
-    plateNumber: str
-    yearIssued: str
-    stateIssued: str
-    mainColor: str
-    accentColor: str
-    title: str
-    description: str
-    flaws: str
-    startingPrice: str
-    postInfo: str
-
 app = FastAPI()
-cred = credentials.Certificate("./api/credentials.json")
+cred = credentials.Certificate('./api/credentials.json')
 
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -59,7 +42,21 @@ def hello_world():
     
     return {"Listings": result}
 
-
+class Listing(BaseModel):
+    firstName: str
+    lastName: str
+    email: str
+    zip: str
+    plateNumber: str
+    yearIssued: str
+    stateIssued: str
+    mainColor: str
+    accentColor: str
+    title: str
+    description: str
+    flaws: str
+    startingPrice: str
+    postInfo: str
 
 @app.post("/listings")
 def create_listing(listing: Listing):
@@ -74,6 +71,40 @@ def create_listing(listing: Listing):
         })
         
         return {"message": "Listing created successfully", "id": doc_ref.id}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class Bid(BaseModel):
+    amount : float
+    listing: str
+    timeDate: datetime
+    user:str
+    verified:bool
+
+
+@app.post("/post-bid")
+def create_data(bid: Bid):
+    try:
+        doc_ref = db.collection('Bid').document()
+        
+        doc_ref.set(bid.dict())
+
+        doc_ref_user = db.collection('User').document(bid.user)
+
+        doc_ref_user.update({
+            "bids": ArrayUnion([doc_ref])
+        })
+
+        doc_ref_listing = db.collection('Listings').document(bid.listing)
+
+        doc_ref_listing.update({
+            "bids": ArrayUnion([doc_ref])
+        })
+
+        return {"message": "Listing created successfully", "id": doc_ref.id}
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
