@@ -3,7 +3,6 @@ from datetime import datetime
 
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import ArrayUnion
-# from firestorm import get_firestore_db
 
 import firebase_admin
 from firebase_admin import credentials
@@ -43,6 +42,39 @@ def hello_world():
     
     return {"Listings": result}
 
+class Listing(BaseModel):
+    firstName: str
+    lastName: str
+    email: str
+    zip: str
+    plateNumber: str
+    yearIssued: str
+    stateIssued: str
+    mainColor: str
+    accentColor: str
+    title: str
+    description: str
+    flaws: str
+    startingPrice: str
+    postInfo: str
+
+@app.post("/listings")
+def create_listing(listing: Listing):
+    try:
+        doc_ref = db.collection('Listings').document()
+        doc_ref.set(listing.dict())
+
+        doc_ref_user = db.collection('User').document('S7mgDyrVTj39tjpZYbn8')
+
+        doc_ref_user.update({
+            "listings": ArrayUnion([doc_ref.id])
+        })
+        
+        return {"message": "Listing created successfully", "id": doc_ref.id}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 class Bid(BaseModel):
     amount : float
@@ -55,9 +87,6 @@ class Bid(BaseModel):
 @app.post("/post-bid")
 def create_data(bid: Bid):
     try:
-
-
-        
         doc_ref = db.collection('Bid').document()
         
         doc_ref.set(bid.dict())
