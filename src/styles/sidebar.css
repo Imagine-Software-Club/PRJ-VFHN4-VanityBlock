@@ -1,0 +1,21 @@
+.sidebar-container {
+  width: 250px; /* Fixed width */
+  height: calc(100vh - 15px); /* Full height minus the navbar height */
+  position: fixed;
+  padding-top: 15px; /* Push down by the height of the navbar */
+  left: 30px;
+}
+
+.sidebar-nav{
+  display: flex;
+  flex-direction: column;
+  padding: 1px;
+}
+
+.sidebar-link{
+  padding: 10px;
+  font-size: 20px;
+  color: black; /* Assuming you want white text for the links */
+  text-decoration: none; /* Remove underline from links */
+  margin-bottom: 0.5px; /* Add some space between the links */
+}
