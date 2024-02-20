@@ -1,4 +1,8 @@
 from fastapi import FastAPI, HTTPException
+from datetime import datetime
+
+from fastapi.middleware.cors import CORSMiddleware
+from google.cloud.firestore import ArrayUnion
 # from firestorm import get_firestore_db
 
 import firebase_admin
@@ -12,6 +16,14 @@ cred = credentials.Certificate('./api/credentials.json')
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allows only specified origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 #Get all listings in database
 @app.get("/listings")
@@ -31,30 +43,39 @@ def hello_world():
     
     return {"Listings": result}
 
-# Define Pydantic model for your data
-class Item(BaseModel):
+
+class Bid(BaseModel):
     amount : float
     listing: str
-    timeDate: str
+    timeDate: datetime
     user:str
     verified:bool
 
-# Define a route to post data to Firestore
+
 @app.post("/post-bid")
-def create_data(data: Item):
+def create_data(bid: Bid):
     try:
-        # Add data to Firestore
+
+
+        
         doc_ref = db.collection('Bid').document()
         
-        doc_ref.set({
-            'Amount': data.amount,
-            'Listing': data.listing,
-            'TimeDate': data.timeDate,
-            'User':data.user,
-            'Verified':data.verified
+        doc_ref.set(bid.dict())
 
+        doc_ref_user = db.collection('User').document(bid.user)
+
+        doc_ref_user.update({
+            "bids": ArrayUnion([doc_ref])
         })
-        return {"message": "Data added successfully"}
+
+        doc_ref_listing = db.collection('Listings').document(bid.listing)
+
+        doc_ref_listing.update({
+            "bids": ArrayUnion([doc_ref])
+        })
+
+        return {"message": "Listing created successfully", "id": doc_ref.id}
     
     except Exception as e:
-        return{"message":e}
+        raise HTTPException(status_code=500, detail=str(e))
+
