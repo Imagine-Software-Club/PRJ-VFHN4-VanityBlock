@@ -30,9 +30,7 @@
     flex-direction: column; /*TEMPORARY*/
     margin-bottom: 2vh;
     background-color: #B8E2F2;
-    opacity:0.7;
     border-radius: 10px;
-    /* border: 1px solid black; */
     color: #1134A6;
 }
 .information p{
