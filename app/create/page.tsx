@@ -227,20 +227,18 @@ export default function Create() {
                         <p>The duration of ALL listings last 7 days</p>
                         <p>Would you like to post your listing now or schedule a post time?</p>
                         <div className="input_row">
-                            <div className="inputs">
-                                <button>Schedule Post</button>
-                                <input 
-                                    name="postInfo" 
-                                    type="text"
-                                    onChange={handleChange}
-                                    value={formData.postInfo}  
-                                />
-
-                            </div>
+                            <button><img src="/images/schedule_post.png" alt="schedule post" width={120} height={120}></img></button>
+                            <input className="schedule_post"
+                                name="postInfo" 
+                                type="text"
+                                placeholder="   Post now"
+                                onChange={handleChange}
+                                value={formData.postInfo}  
+                            />
                         </div>
                     </div>
-                    <button onClick={handleSubmit}>Submit Listing</button>
                 </div>
+                <button onClick={handleSubmit}><img src="/images/submit_listing.png" alt="submit" width={500} height={500}></img></button>
             </div>
         </div>
     );

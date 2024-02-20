@@ -16,6 +16,10 @@
     align-items: flex-start;
     flex-direction: column;
 }
+.container button{
+    align-self: center;
+    margin-bottom: 15px;
+}
 
 .information{
     font-family: Verdana;
@@ -47,14 +51,22 @@
     /* align-items:center; */
 }
 .input_row button{
-    background-color:grey;
-    font-weight: normal;
-    color:black;
-    border-radius: 6px;
-    width:20%;
-    height:1%;
-    margin:4px;
+    margin-top:10px;
+    margin-right:10px;
+    margin-left:5px;
+}
 
+.schedule_post{
+    margin-top:4px;
+    margin-bottom: 8px;
+    border:1px solid black;
+    border-radius: 6px;
+    width:25%;
+    height:40px;
+    color: none;
+    font-size: small;
+    font-weight:normal;
+    color: black;
 }
 
 .inputs{
