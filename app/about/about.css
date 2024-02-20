@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    flex: 0 0 20%;
+    background-color: #ffffff;
+    color: white;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 1px;
+  }
+  
+  .content-title {
+    flex: 1;
+    padding: 1px;
+  }
