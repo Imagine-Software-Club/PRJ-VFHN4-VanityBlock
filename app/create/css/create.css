@@ -1,0 +1,89 @@
+.wrapper{
+    display: flex;
+    /* border:1px solid black; */
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.container{
+    font-weight:bold;
+    font-family: Verdana;
+    width:50%;
+    font-size: 25px;
+    display: flex;
+    /* border: 1px solid black; */
+    align-items: flex-start;
+    flex-direction: column;
+}
+.container button{
+    align-self: center;
+    margin-bottom: 15px;
+}
+
+.information{
+    font-family: Verdana;
+    width:100%;
+    font-size: 17px;
+    display: flex;
+    align-self:center;
+    flex-direction: column; /*TEMPORARY*/
+    margin-bottom: 2vh;
+    background-color: #B8E2F2;
+    opacity:0.7;
+    border-radius: 10px;
+    /* border: 1px solid black; */
+    color: #1134A6;
+}
+.information p{
+    margin-left:5px;
+    color: #1134A6;
+}
+
+.label p{
+    font-size:12px;
+    margin-right:4px;
+    color:black;
+}
+
+.input_row{
+    display:flex;
+    /* align-items:center; */
+}
+.input_row button{
+    margin-top:10px;
+    margin-right:10px;
+    margin-left:5px;
+}
+
+.schedule_post{
+    margin-top:4px;
+    margin-bottom: 8px;
+    border:1px solid black;
+    border-radius: 6px;
+    width:25%;
+    height:40px;
+    color: none;
+    font-size: small;
+    font-weight:normal;
+    color: black;
+}
+
+.inputs{
+    display:flex;
+    flex-direction:column;
+    margin-left:5px;
+    margin-right:5px;
+}
+
+.inputs input{
+    margin-top:4px;
+    margin-bottom: 8px;
+    border:1px solid black;
+    border-radius: 6px;
+    width:100%;
+    color: none;
+    font-size: small;
+    font-weight:normal;
+    color: black;
+}

@@ -5,7 +5,6 @@ import MainMenuHeader from '@/src/components/MainMenuHeader'
 import { Box } from '@mui/material'
 import ListingPage from '@/app/listings/page';
 
-  
 export default function Homepage() { 
 
   
@@ -33,5 +32,15 @@ export default function Homepage() {
 
   </Box>
   </center>
-  );
+
+
+    
+  ) 
 }
+// export default function Home() {
+//   return (
+//     <main>
+//       <h1> Vanity Block! </h1>
+//     </main>
+//   );
+//   }
