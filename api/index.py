@@ -29,3 +29,17 @@ def hello_world():
 
     
     return {"Listings": result}
+
+@app.get("/listings/{listingId}")
+def getListingInfo(listingId):
+    result = []
+
+    user = db.collection('Listings').document(listingId)
+    docs = user.stream()
+    for doc in docs:
+        this_event = doc.to_dict()
+        result.append(this_event)
+    else:
+        print("Document does not exist!")
+
+    return {"Impoj": result}

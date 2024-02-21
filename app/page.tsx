@@ -10,8 +10,8 @@ export default function Homepage() {
 
   
   return ( 
-  <center>
-  
+    <center>
+
 
   <Box>
     <MainMenuHeader/>
@@ -33,8 +33,5 @@ export default function Homepage() {
 
   </Box>
   </center>
-
-
-    
-  ) 
+  );
 }
