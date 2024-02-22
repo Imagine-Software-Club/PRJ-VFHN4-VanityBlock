@@ -102,13 +102,13 @@ def create_data(bid: Bid):
         doc_ref_user = db.collection('User').document(bid.user)
 
         doc_ref_user.update({
-            "bids": ArrayUnion([doc_ref])
+            "bids": ArrayUnion([doc_ref.id])
         })
 
         doc_ref_listing = db.collection('Listings').document(bid.listing)
 
         doc_ref_listing.update({
-            "bids": ArrayUnion([doc_ref])
+            "bids": ArrayUnion([doc_ref.id])
         })
 
         return {"message": "Listing created successfully", "id": doc_ref.id}
