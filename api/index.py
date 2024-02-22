@@ -26,7 +26,7 @@ app.add_middleware(
 
 #Get all listings in database
 @app.get("/listings")
-def hello_world():
+def get_all_listing():
     result = []
 
     user = db.collection('Listings')
