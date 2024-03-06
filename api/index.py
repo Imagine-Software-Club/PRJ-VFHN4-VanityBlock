@@ -35,6 +35,7 @@ def get_all_listing():
     for doc in docs:
         if doc.exists:
             this_event = doc.to_dict()
+            this_event["id"] = doc.id
             result.append(this_event)
         else:
             print("Document does not exist!")

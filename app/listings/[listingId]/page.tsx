@@ -37,19 +37,21 @@ export default function Page() {
     data: data
   })
   ).then(jsonRes => {
-    setLicensePlate(jsonRes.data["LicensePlate"]);
-    setYearIssued(jsonRes.data["YearIssued"]);
-    setState(jsonRes.data["State"]);
-    setStartingPrice(jsonRes.data["StartingPrice"]);
-    setPhoto(jsonRes.data["Picture"][0]);
-    setZip(jsonRes.data["Zip"]);
-    setStateAbbr(jsonRes.data["StateAbbr"]);
-    setCity(jsonRes.data["City"]);
+    setLicensePlate(jsonRes.data["plateNumber"]);
+    setYearIssued(jsonRes.data["yearIssued"]);
+    setState(jsonRes.data["stateIssued"]);
+    setStartingPrice(jsonRes.data["startingPrice"]);
+    setPhoto(jsonRes.data["picture"][0]);
+    setZip(jsonRes.data["zip"]);
+
     // var photos = [];
     // for (var i = 0; jsonRes.data["Picture"].length; i++) {
     //   setPhotos([...photos, jsonRes.data["Picture"][i]]);
     // }
   });
+
+  const numericStartingPrice = parseFloat(startingPrice);
+  const formattedPrice = isNaN(numericStartingPrice) ? "Invalid Price" : `$${numericStartingPrice.toFixed(2)}`;
 return(
   <div className="container">
       <div className="listing-info">
@@ -74,7 +76,8 @@ return(
                       <InfoButton icon={clockIcon}info={"12:54:52"}/>
                   </a>
                   <a>
-                  <InfoButton icon={blueHammer}info={"$ " + startingPrice.toFixed(2)}/>
+
+                  <InfoButton icon={blueHammer} info={formattedPrice} />
                   </a>
                   <a>
                       <InfoButton info={"# " + 29}/>
