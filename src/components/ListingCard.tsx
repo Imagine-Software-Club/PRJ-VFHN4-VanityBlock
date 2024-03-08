@@ -43,7 +43,7 @@ function ListingCard(props: any){
               objectFit: 'cover',
               height: 300,
               width: 430,
-            }}
+            }}  
             image = "images/PlateExample.jpg"
           />
           
@@ -76,14 +76,12 @@ function ListingCard(props: any){
                   alt = "Clock Icon"
                   src = "images/Clock.png"
                 >
-
                 </Box>
                 {props.time}
               </Box> 
             </Item>
             <Item> {props.price} </Item>
           </Box>
-          
         </Box>
 
         <CardContent>
