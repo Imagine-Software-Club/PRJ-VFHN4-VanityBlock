@@ -71,7 +71,7 @@ class Listing(BaseModel):
 def create_listing(listing: Listing):
     try:
         doc_ref = db.collection('Listings').document()
-        doc_ref.set(listing.dict())
+        doc_ref.set(listing.model_dump())
 
         doc_ref_user = db.collection('User').document('S7mgDyrVTj39tjpZYbn8')
 
@@ -98,7 +98,7 @@ def create_data(bid: Bid):
     try:
         doc_ref = db.collection('Bid').document()
         
-        doc_ref.set(bid.dict())
+        doc_ref.set(bid.model_dump())
 
         doc_ref_user = db.collection('User').document(bid.user)
 
@@ -109,8 +109,11 @@ def create_data(bid: Bid):
         doc_ref_listing = db.collection('Listings').document(bid.listing)
 
         doc_ref_listing.update({
-            "bids": ArrayUnion([doc_ref.id])
+            "bids": ArrayUnion([doc_ref.id]),
+            "price":bid.amount
         })
+
+        
 
         return {"message": "Listing created successfully", "id": doc_ref.id}
     
