@@ -14,9 +14,8 @@ import { formatISO } from 'date-fns';
 
 export default function BiddingBox(props: any) {
 
-
     const [bidData, setbidData] = useState({
-      amount: "",
+      amount: 0,
       listing: props.listing,
       timeDate: "",
       user: "S7mgDyrVTj39tjpZYbn8",
@@ -75,6 +74,8 @@ export default function BiddingBox(props: any) {
                         variant="outlined"
                         id="searchBar"
                         type='number'
+                        
+                        
                         onChange={(event)=>{
                           if(event.target.value > props.price){
                             updateDictionary("amount", event.target.value);
@@ -87,6 +88,9 @@ export default function BiddingBox(props: any) {
                             style:{
                                 color:"#9595a6"
                             }
+                        }}
+                        inputProps={{
+                            step:0.01,
                         }}
                         placeholder={"Bid $" + (props.price+1) +" or more"}
                         sx={{
