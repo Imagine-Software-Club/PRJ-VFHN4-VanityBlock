@@ -66,7 +66,7 @@ export default function Create() {
     return(
         <div className="wrapper">
             <div className="container">
-                <p>List your plate</p>
+                <center><p>List your plate</p></center>
                 {/* personal information */}
                 <div className="information">
                     <p>Personal Information</p>
@@ -130,10 +130,12 @@ export default function Create() {
                             <div className="inputs">
                                 <p>Year Issued</p>
                                 <input 
-                                    name="yearIssued" 
-                                    type="date"
+                                    name="yearIssued"
+                                    type="number"
                                     onChange={handleChange}
-                                    value={formData.yearIssued}     
+                                    value={formData.yearIssued}
+                                    min="1980"
+                                    max="2030"   
                                 />
                             </div>
                             <div className="inputs">
@@ -180,6 +182,7 @@ export default function Create() {
                 <div className="information">
                     <p>Lisiting Details</p>
                     <div className="label">
+                        <center>
                         <div className="inputs">
                             <p>Title of Listing</p>
                             <input 
@@ -191,25 +194,30 @@ export default function Create() {
                             />
                         </div>
                         <div className="inputs">
-                            <p>Description of Listing</p>
-                            <input 
-                                name="description" 
-                                type="text" 
-                                placeholder="Write a description of the plate. What does it look like Does it have a history?" 
-                                onChange={handleChange}
-                                value={formData.description}  
-                            />
-                        </div>
-                        <div className="inputs">
-                            <p>List of Known Flaws</p>
-                            <input  
-                                name="flaws"
-                                type="text" 
-                                placeholder="Write any flaws that the plate may have. For example: scratches, dents, any holes, or other imperfections."
-                                onChange={handleChange}
-                                value={formData.flaws}  
-                            />
-                        </div>    
+    <p>Description of Listing</p>
+    <textarea
+        name="description"
+        placeholder="Write a description of the plate. What does it look like? Does it have a history?"
+        onChange={handleChange}
+        value={formData.description}
+        rows="8" // Set the number of rows as needed
+    />
+</div>
+<div className="inputs">
+    <p>List of Known Flaws</p>
+    <textarea
+        name="flaws"
+        placeholder="Write any flaws that the plate may have. For example: scratches, dents, any holes, or other imperfections."
+        onChange={handleChange}
+        value={formData.flaws}
+        rows="8" // Set the number of rows as needed
+    />
+
+    <br></br>
+    
+</div>
+   
+                        </center>
                     </div>
                 </div>
                 <div className="information">

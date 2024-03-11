@@ -17,13 +17,11 @@ export default function ListingPage() {
   const [timer, setTimer] = useState(0);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
 
-  const {listingId} = useParams();
+  const { listingId } = useParams();
 
   useEffect(() => {
-    
     const fetchData = async () => {
       try {
-        
         const response = await fetch(`http://localhost:8000/listings/${listingId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -32,13 +30,11 @@ export default function ListingPage() {
         const data = await response.json();
         setListingData(data);
 
-        // Parse endTime to get a Date object, then get the time in milliseconds
         const endTime = new Date(data.endTime).getTime();
-
         const calculateTimeLeft = () => {
-          const now = Date.now(); // Current time in milliseconds
-          const timeLeft = endTime - now; // Time left in milliseconds
-          return timeLeft / 1000; // Convert time left to seconds
+          const now = Date.now();
+          const timeLeft = endTime - now;
+          return timeLeft / 1000;
         };
 
         setTimer(calculateTimeLeft());
@@ -61,7 +57,7 @@ export default function ListingPage() {
     };
 
     fetchData();
-  }, []);
+  }, [listingId]);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -95,9 +91,10 @@ export default function ListingPage() {
             <p className="location">{listingData.location}</p>
           </div>
           <div className="main-photo-container">
-            <Image alt="License plate main photo" className="main-photo" width = "100" height = "100" src={listingData.picture[selectedPhotoIndex]} />
+            <Image alt="License plate main photo" className="main-photo" width="100" height="100" src={listingData.picture[selectedPhotoIndex]} />
           </div>
           <div className="bid-info">
+            <br></br>
             <a>
               <InfoButton icon={clockIcon} info={timer > 0 ? formatTime(timer) : 'Ended'} />
             </a>
@@ -105,8 +102,7 @@ export default function ListingPage() {
               <InfoButton icon={blueHammer} info={formatPrice(listingData.price)} />
             </a>
             <a>
-            <InfoButton info={`# ${listingData.bids.length}`} />
-
+              <InfoButton info={`# ${listingData.bids.length}`} />
             </a>
             <a className="bid-button">
               <Image src={bidIcon} alt="" width={35} />
@@ -116,17 +112,45 @@ export default function ListingPage() {
         </div>
         <div className="right-column">
           <div className="share">
-            
+            {/* Add your shareable component here */}
           </div>
           <div className="picture-grid">
             {listingData.picture.map((picture, index) => (
               <div key={index} className={`photo ${index === selectedPhotoIndex ? 'selected' : ''}`} onClick={() => handlePhotoClick(index)}>
-                <Image alt={`Other photo ${index + 1}`} width = "100" height = "100" className="small-photo" src={picture} />
+                <Image alt={`Other photo ${index + 1}`} width="100" height="100" className="small-photo" src={picture} />
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      <div className="information-box">
+    <center><b><h1>Additional Information</h1></b></center>
+    <br></br>
+    <h3><b>Description</b></h3>
+    <p>{listingData.description}</p>
+    <br></br>
+    <h3><b>Flaws</b></h3>
+    <p>{listingData.flaws}</p>
+    <br></br>
+    <h3><b>State</b></h3>
+    <p>{listingData.state}</p>
+    <br></br>
+    <h3><b>Year Issued</b></h3>
+    <p>{listingData.year}</p>
+    <br></br>
+    <h3><b>Main Color</b></h3>
+    <p>{listingData.mainColor}</p>
+    <br></br>
+    <h3><b>Accent Color</b></h3>
+    <p>{listingData.accentColor}</p>
+    <br></br>
+</div>
+
+      <br></br>
+        <br></br>
     </div>
+
+    
   );
 }

@@ -7,7 +7,9 @@ from google.cloud.firestore import ArrayUnion
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+
 from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 cred = credentials.Certificate('./api/credentials.json')
@@ -65,19 +67,19 @@ class Listing(BaseModel):
     description: str
     flaws: str
     postInfo: str
+    # picture: List[str]
 
 @app.post("/listings")
 def create_listing(listing: Listing):
+    print("got here")
     try:
         doc_ref = db.collection('Listings').document()
         listing = listing.dict()
 
-        listing["price"] = 0
+        listing["price"] = 1
         listing["endTime"] = datetime.now() + timedelta(days=7)
 
         doc_ref.set(listing)
-
-        
 
         doc_ref_user = db.collection('User').document('S7mgDyrVTj39tjpZYbn8')
         doc_ref_user.update({

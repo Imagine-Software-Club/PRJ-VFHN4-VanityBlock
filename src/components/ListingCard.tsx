@@ -86,7 +86,7 @@ function ListingCard(props) {
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
-            image="images/PlateExample.jpg"
+            image={listing.picture}
             alt="Listing Image"
           />
 

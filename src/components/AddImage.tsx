@@ -3,7 +3,7 @@ import { storage } from './firebase-config';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function ImageUpload() {
-  const [images, setImages] = useState([]);
+  const [picture, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   const handleImageChange = (e) => {
