@@ -3,11 +3,11 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
+    position: absolute;
+    z-index: 1;
+    background-color: #fff;
 }
-.buy-button{
-    color: #232f60;
-    background-color: #232f60;
-}
+
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -15,6 +15,15 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 
+.bid-format{
+    display: flex;
+    flex-direction: row;
+}
 .redFont{
     color: red;
 }
+
+.center-text{
+    text-align: center;
+}
+

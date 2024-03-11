@@ -6,7 +6,7 @@ import '@/src/styles/biddingbox.css';
 import Image from 'next/image';
 import {  } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, FormControl, InputAdornment, TextField } from '@mui/material';
+import { Button, FormControl, IconButton, InputAdornment, TextField } from '@mui/material';
 import InfoButton from './InfoButton';
 import { formatISO } from 'date-fns';
 
@@ -81,15 +81,21 @@ export default function BiddingBox(props: any) {
     };
     return (
         <div className='BiddingBoxContainer'>
-            <Button  aria-label="close" onClick={props.hideBox}>
-              <CloseIcon/>
+            <Button disableRipple style={{ 
+              backgroundColor: 'transparent',
+              justifyContent: 'flex-end'
+           }}>
+              <IconButton aria-label="close" onClick={props.hideBox}>
+                <CloseIcon/>
+              </IconButton>
             </Button>
             {props.image ? <Image src={props.icon} alt="Image of the bidding plate"/> : null}
 
             <p className="title">{props.state} {props.licensePlate} {props.date}</p>
-            <p>Time Left <span className='redFont'>{formatTime(timer)}</span></p>
-            <p>Current Bid <span className='redFont'>{props.price}</span></p>
-            <FormControl className='bid-format'>
+            <p className='center-text'>Time Left <span className='redFont'>{formatTime(timer)}</span></p>
+            <p className='center-text'>Current Bid <span className='redFont'>{props.price}</span></p>
+            <FormControl >
+              <div className='bid-format'>
                     <TextField 
                         required
                         variant="outlined"
@@ -128,13 +134,14 @@ export default function BiddingBox(props: any) {
                               fill: "#1c1c1d !important",                            }
                           }}
                     />
-                    <Button className="buy-button" variant="contained"
+                    <Button style={{ backgroundColor: '#242e5e', color: 'white' }} variant="contained"
                       onClick={submitBid}
                     >
                       Buy
                     </Button>
+                </div>
 
-                </FormControl>
+            </FormControl>
         </div>
     )
 }
