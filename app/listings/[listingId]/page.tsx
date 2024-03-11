@@ -26,6 +26,7 @@ async function getData() {
 export default function Page() {
   const {listingId} = useParams();
   const jsonRes = getData();
+  const [showBiddingBox, setShowbiddingBox] = useState(false);
   const [licensePlate, setLicensePlate] = useState("");
   const [yearIssued, setYearIssued] = useState(0);
   const [state, setState] = useState("");
@@ -34,6 +35,7 @@ export default function Page() {
   const [zip, setZip] = useState(0);
   const [stateAbbr, setStateAbbr] = useState("");
   const [city, setCity] = useState("");
+  const [price, setPrice] = useState("")
   // const [photos, setPhotos] = useState([] as string[]);
   jsonRes.then(data => ({
     data: data
@@ -45,21 +47,28 @@ export default function Page() {
     setStartingPrice(jsonRes.data["startingPrice"]);
     //setPhoto(jsonRes.data["picture"][0]);
     setZip(jsonRes.data["zip"]);
-
+    setPrice(jsonRes.data["price"])
     // var photos = [];
     // for (var i = 0; jsonRes.data["Picture"].length; i++) {
     //   setPhotos([...photos, jsonRes.data["Picture"][i]]);
     // }
   });
   
+  const hideBiddingBox = () => {
+    console.log("bidding box off");
+    setShowbiddingBox(false);
+  };
+
 
   const numericStartingPrice = parseFloat(startingPrice);
-  const formattedPrice = isNaN(numericStartingPrice) ? "Invalid Price" : `$${numericStartingPrice.toFixed(2)}`;
+  const numericPrice = parseFloat(price)
+  const formattedStartingPrice = isNaN(numericStartingPrice) ? "Invalid Price" : `$${numericStartingPrice.toFixed(2)}`;
+  const formattedPrice = isNaN(numericPrice) ? "Invalid Price" : `$${numericPrice.toFixed(2)}`;
 return(
   <div>
     
     <div className="container">
-    <BiddingBox listing={listingId} state={state} licensePlate={licensePlate} date={yearIssued} price={startingPrice}></BiddingBox>
+    {showBiddingBox &&<BiddingBox hideBox={hideBiddingBox} listing={listingId} state={state} licensePlate={licensePlate} date={yearIssued} price={price}></BiddingBox>}
         <div className="listing-info">
             <div className="main-content">
                 <div className="info">
@@ -89,7 +98,11 @@ return(
                         <InfoButton info={"# " + 29}/>
                     </a>
                     <a className="bid-button">
-                        <Image src={bidIcon} alt="" width={35}/>
+                        <Image onClick={()=>{
+                          console.log("bidding box on");
+                          setShowbiddingBox(true)
+                        }} 
+                        src={bidIcon} alt="" width={35}/>
                         <p>Place Bid</p>
                     </a>
                 </div>

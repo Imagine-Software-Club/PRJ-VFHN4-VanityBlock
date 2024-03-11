@@ -14,6 +14,24 @@ import { formatISO } from 'date-fns';
 
 export default function BiddingBox(props: any) {
 
+  const [timer, setTimer] = React.useState(24 * 60 * 60);
+  
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+    }, 1000);
+
+    // Cleanup the interval when the component unmounts or when the timer reaches 0
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run the effect only once
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
     const [bidData, setbidData] = useState({
       amount: 0,
       listing: props.listing,
@@ -63,11 +81,14 @@ export default function BiddingBox(props: any) {
     };
     return (
         <div className='BiddingBoxContainer'>
+            <Button  aria-label="close" onClick={props.hideBox}>
+              <CloseIcon/>
+            </Button>
             {props.image ? <Image src={props.icon} alt="Image of the bidding plate"/> : null}
 
             <p className="title">{props.state} {props.licensePlate} {props.date}</p>
-            <p>Time Left <span>{props.timeLeft}</span></p>
-            <p>Current Bid <span>{props.price}</span></p>
+            <p>Time Left <span className='redFont'>{formatTime(timer)}</span></p>
+            <p>Current Bid <span className='redFont'>{props.price}</span></p>
             <FormControl className='bid-format'>
                     <TextField 
                         required
