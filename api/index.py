@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import ArrayUnion
@@ -64,19 +64,24 @@ class Listing(BaseModel):
     title: str
     description: str
     flaws: str
-    startingPrice: str
     postInfo: str
 
 @app.post("/listings")
 def create_listing(listing: Listing):
     try:
         doc_ref = db.collection('Listings').document()
-        doc_ref.set(listing.dict())
+        listing = listing.dict()
+
+        listing["price"] = 0
+        listing["endTime"] = datetime.now() + timedelta(days=7)
+
+        doc_ref.set(listing)
+
+        
 
         doc_ref_user = db.collection('User').document('S7mgDyrVTj39tjpZYbn8')
-
         doc_ref_user.update({
-            "listings": ArrayUnion([doc_ref.id])
+            "listings": ArrayUnion([doc_ref.id]),
         })
         
         return {"message": "Listing created successfully", "id": doc_ref.id}

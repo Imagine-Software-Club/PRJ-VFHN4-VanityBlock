@@ -58,7 +58,7 @@ export default function Create() {
             // Handle error
         }
 
-        
+        window.location.reload();
 
 
     };
@@ -215,27 +215,11 @@ export default function Create() {
                 <div className="information">
                     <p>Auction Details and Posting</p>
                     <div className="label">
-                        <div className="inputs">
-                            <p>Starting Price</p>
-                            <input 
-                                name="startingPrice" 
-                                type="money"
-                                onChange={handleChange}
-                                value={formData.startingPrice}  
-                            />
-                        </div>
+                        <p>Starting Price: $1.00</p>
+                        <br></br>
                         <p>The duration of ALL listings last 7 days</p>
-                        <p>Would you like to post your listing now or schedule a post time?</p>
-                        <div className="input_row">
-                            <button><img src="/images/schedule_post.png" alt="schedule post" width={120} height={120}></img></button>
-                            <input className="schedule_post"
-                                name="postInfo" 
-                                type="text"
-                                placeholder="   Post now"
-                                onChange={handleChange}
-                                value={formData.postInfo}  
-                            />
-                        </div>
+                        <p>If bid placed under 1 minute left, the listing resets timer to 1 minute</p>
+                        <br></br>
                     </div>
                 </div>
                 <button onClick={handleSubmit}><img src="/images/submit_listing.png" alt="submit" width={500} height={500}></img></button>
