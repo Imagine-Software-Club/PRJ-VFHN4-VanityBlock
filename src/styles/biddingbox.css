@@ -1,0 +1,37 @@
+.BiddingBoxContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed; /* or absolute, depending on your layout */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10; /* Ensure it's above other content */
+    background: white; /* Or any background you prefer */
+    padding: 20px; /* Adjust as needed */
+    border-radius: 8px; /* Optional, for rounded corners */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Optional, for a shadow */
+  }
+  
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.bid-format{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.redFont{
+    color: red;
+}
+
+.center-text{
+    text-align: center;
+}
+
