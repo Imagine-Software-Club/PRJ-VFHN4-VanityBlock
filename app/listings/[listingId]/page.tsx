@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react";
+import React, { useEffect } from "react";
 import {useState} from 'react';
 import { useParams, } from 'next/navigation';
 import '../css/listingpage.css';
@@ -27,6 +27,7 @@ export default function Page() {
   const {listingId} = useParams();
   const jsonRes = getData();
   const [showBiddingBox, setShowbiddingBox] = useState(false);
+  
   const [licensePlate, setLicensePlate] = useState("");
   const [yearIssued, setYearIssued] = useState(0);
   const [state, setState] = useState("");
@@ -58,6 +59,10 @@ export default function Page() {
     console.log("bidding box off");
     setShowbiddingBox(false);
   };
+
+  useEffect(()=>{
+
+  },[showBiddingBox])
 
 
   const numericStartingPrice = parseFloat(startingPrice);

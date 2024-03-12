@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState }  from "react"
 import '@/src/styles/biddingbox.css';
 import Image from 'next/image';
@@ -25,6 +25,8 @@ export default function BiddingBox(props: any) {
     return () => clearInterval(intervalId);
   }, []); // Empty dependency array to run the effect only once
 
+
+
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -39,26 +41,22 @@ export default function BiddingBox(props: any) {
       user: "S7mgDyrVTj39tjpZYbn8",
       verified: true,
     });
+
+
     
         // Function to update a specific key within the dictionary
     const updateDictionary = (key, value) => {
+      console.log(bidData);
       setbidData(prevState => ({
         ...prevState, // Spread the previous state
         [key]: value // Update the value of the specified key
       }));
+      console.log(bidData);
     };
-    
-    const submitBid = async (e) => {
-      e.preventDefault(); // Prevent default form submission behavior
 
-      if(bidData["amount"] <= props.price){
-        return;
-      }
-
-      updateDictionary("timeDate",formatISO(new Date()))
-      console.log(JSON.stringify(bidData));
-      // API stuff goes here
-      try {
+    useEffect(() => {
+      const fetchData = async () =>{
+        try {
           const response = await fetch('http://localhost:8000/post-bid', {  // Adjust the URL/port as needed
               method: 'POST',
               headers: {
@@ -70,13 +68,30 @@ export default function BiddingBox(props: any) {
           if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
           }
-    
+          props.hideBox()
           const data = await response.json();
+          
           // Handle success response
-      } catch (error) {
+        } catch (error) {
           console.error('Error posting listing:', error);
-          // Handle error
+          
+        }
       }
+      fetchData();
+    }, [bidData["timeDate"]]);
+    
+    const submitBid = async (e) => {
+      e.preventDefault(); // Prevent default form submission behavior
+
+      if(bidData["amount"] <= props.price){
+        return;
+      }
+
+      const dateISO = new Date().toISOString();
+      updateDictionary("timeDate",dateISO);
+
+      // API stuff goes here
+      
     
     };
     return (
@@ -84,7 +99,7 @@ export default function BiddingBox(props: any) {
             <Button disableRipple style={{ 
               backgroundColor: 'transparent',
               justifyContent: 'flex-end'
-           }}>
+              }}>
               <IconButton aria-label="close" onClick={props.hideBox}>
                 <CloseIcon/>
               </IconButton>
@@ -107,9 +122,7 @@ export default function BiddingBox(props: any) {
                           if(event.target.value > props.price){
                             updateDictionary("amount", event.target.value);
                           }
-                          else{
-                            updateDictionary("amount", 0);
-                          }
+                          
                         }}
                         InputProps={{
                             style:{
