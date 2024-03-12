@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Box, { BoxProps } from '@mui/material/Box';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -12,7 +12,7 @@ const sxOuterCard = {
   boxShadow: "none",
 };
 
-function Item(props: BoxProps) {
+function Item(props) {
   const { sx, ...other } = props;
 
   return (
@@ -32,27 +32,48 @@ function Item(props: BoxProps) {
   );
 }
 
-function ListingCard(props: any) {
-  const [timer, setTimer] = React.useState(24 * 60 * 60); // 24 hours in seconds
+function ListingCard(props) {
+  // Parse endTime to get a Date object, then get the time in milliseconds
+  const endTime = new Date(props.endTime).getTime();
+
+  const calculateTimeLeft = () => {
+    const now = Date.now(); // Current time in milliseconds
+    const timeLeft = endTime - now; // Time left in milliseconds
+    return timeLeft / 1000; // Convert time left to seconds
+  };
+
+  const [timer, setTimer] = React.useState(calculateTimeLeft());
 
   React.useEffect(() => {
     const intervalId = setInterval(() => {
-      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+      const timeLeft = calculateTimeLeft();
+      if (timeLeft > 0) {
+        setTimer(timeLeft);
+      } else {
+        clearInterval(intervalId);
+        setTimer(0);
+      }
     }, 1000);
 
-    // Cleanup the interval when the component unmounts or when the timer reaches 0
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array to run the effect only once
+  }, [endTime]);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+    const remainingSeconds = Math.floor(seconds % 60);
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
+  const formatPrice = (price) => {
+    return `$${parseFloat(price).toFixed(2)}`;
+  };
+
+  // Access the first listing as an example
+  const listing = props;
+
   return (
-    <Link href={`/listings/${props.id}`} underline="none">
+    <Link href={`/listings/${listing.id}`} underline="none">
       <Card sx={{ ...sxOuterCard }}>
         <Box sx={{ position: 'relative' }}>
           <CardMedia
@@ -65,7 +86,7 @@ function ListingCard(props: any) {
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
-            image="images/PlateExample.jpg"
+            image={listing.picture}
             alt="Listing Image"
           />
 
@@ -97,16 +118,16 @@ function ListingCard(props: any) {
                   alt="Clock Icon"
                   src="images/Clock.png"
                 />
-                {formatTime(timer)}
+                {timer > 0 ? formatTime(timer) : "Ended"}
               </Box>
             </Item>
-            <Item>{props.price}</Item>
+            <Item>{formatPrice(listing.price)}</Item>
           </Box>
         </Box>
 
         <CardContent>
           <h1>
-            <center>{props.name}</center>
+            <center>{listing.title}</center>
           </h1>
         </CardContent>
       </Card>

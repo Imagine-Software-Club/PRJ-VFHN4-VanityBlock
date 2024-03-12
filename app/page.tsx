@@ -36,9 +36,16 @@ const Homepage = () => {
             <Grid key={index} item xs={12} sm={6} md={4}>
               <ListingCard
                 name={listing["plateNumber"]}
-                time={listing["firstName"]}
-                price={listing["lastName"]}
+                endTime={listing["endTime"]}
+                price={listing["price"]}
                 id={listing["id"]}
+                picture={listing["picture"][0]}
+                description={listing["description"]}
+                flaws={listing["flaws"]}
+                mainColor={listing["mainColor"]}
+                accentColor = {listing["accentColor"]}
+                year = {listing["yearIssued"]}
+                state = {listing["stateIssued"]}
               />
             </Grid>
           ))}

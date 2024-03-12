@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import ArrayUnion
@@ -7,7 +7,9 @@ from google.cloud.firestore import ArrayUnion
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+
 from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 cred = credentials.Certificate('./api/credentials.json')
@@ -64,19 +66,25 @@ class Listing(BaseModel):
     title: str
     description: str
     flaws: str
-    startingPrice: str
     postInfo: str
+    # picture: List[str]
 
 @app.post("/listings")
 def create_listing(listing: Listing):
+    print("got here")
     try:
         doc_ref = db.collection('Listings').document()
-        doc_ref.set(listing.model_dump())
+        listing_data = listing.model_dump()  # Assuming this is a dictionary or can be made into one.
+
+        # Explicitly set price and endTime.
+        listing_data["price"] = 1
+        listing_data["endTime"] = datetime.now() + timedelta(days=7)
+
+        doc_ref.set(listing_data)
 
         doc_ref_user = db.collection('User').document('S7mgDyrVTj39tjpZYbn8')
-
         doc_ref_user.update({
-            "listings": ArrayUnion([doc_ref.id])
+            "listings": ArrayUnion([doc_ref.id]),
         })
         
         return {"message": "Listing created successfully", "id": doc_ref.id}
