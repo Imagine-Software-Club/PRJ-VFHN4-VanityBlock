@@ -26,7 +26,6 @@
 .information {
     font-family: Verdana;
     width: 100%;
-    font-size: 17px;
     display: flex;
     align-self: center;
     flex-direction: column;
@@ -34,7 +33,6 @@
     background-color: #B8E2F2;
     opacity: 0.7;
     border-radius: 10px;
-    color: #F4F6FF;
 }
 
 .label {

@@ -87,7 +87,7 @@ export default function BiddingBox(props) {
             id="bidAmount"
             type='number'
             onChange={(event) => updateDictionary("amount", event.target.value)}
-            placeholder={`Bid $${parseFloat(props.price) + 1} or more`}
+            placeholder={`Bid $${parseFloat(props.price) + 0.01} or more`}
             fullWidth
           />
           <Button variant="contained" onClick={submitBid} style={{ margin: '10px' }}>
