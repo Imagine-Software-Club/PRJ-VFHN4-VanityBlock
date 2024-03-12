@@ -223,7 +223,11 @@ export default function Create() {
                 <div className="information">
                     <p>Auction Details and Posting</p>
                     <div className="label">
-                        <p>Starting Price: $1.00</p>
+                        <div className="set-starting-price">
+                            <label className="starting-label">Starting Price:</label>
+                            <input type="text" className="starting-price" name="startingPrice" placeholder="$ Optional" value={formData.startingPrice} onChange={handleChange}></input>
+                        </div>
+                        
                         <br></br>
                         <p>The duration of ALL listings last 7 days</p>
                         <p>If bid placed under 1 minute left, the listing resets timer to 1 minute</p>
