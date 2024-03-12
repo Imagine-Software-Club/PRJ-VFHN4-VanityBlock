@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
+
 import Image from "next/image";
 import shareButton from "@/public/images/share-button.png";
 import InfoButton from "@/src/components/InfoButton";
 import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
+import BiddingBox from "@/src/components/BiddingBox";
 
 export default function ListingPage() {
   const [listingData, setListingData] = useState(null);
@@ -84,6 +86,8 @@ export default function ListingPage() {
 
   return (
     <div className="container">
+      {showBiddingBox &&<BiddingBox hideBox={hideBiddingBox} listing={listingId} state={state} licensePlate={licensePlate} date={yearIssued} price={price}></BiddingBox>}
+
       <div className="listing-info">
         <div className="main-content">
           <div className="info">

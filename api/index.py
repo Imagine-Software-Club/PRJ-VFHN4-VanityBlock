@@ -74,12 +74,13 @@ def create_listing(listing: Listing):
     print("got here")
     try:
         doc_ref = db.collection('Listings').document()
-        listing = listing.dict()
+        listing_data = listing.model_dump()  # Assuming this is a dictionary or can be made into one.
 
-        listing["price"] = 1
-        listing["endTime"] = datetime.now() + timedelta(days=7)
+        # Explicitly set price and endTime.
+        listing_data["price"] = 1
+        listing_data["endTime"] = datetime.now() + timedelta(days=7)
 
-        doc_ref.set(listing)
+        doc_ref.set(listing_data)
 
         doc_ref_user = db.collection('User').document('S7mgDyrVTj39tjpZYbn8')
         doc_ref_user.update({
@@ -105,7 +106,7 @@ def create_data(bid: Bid):
     try:
         doc_ref = db.collection('Bid').document()
         
-        doc_ref.set(bid.dict())
+        doc_ref.set(bid.model_dump())
 
         doc_ref_user = db.collection('User').document(bid.user)
 
@@ -116,8 +117,11 @@ def create_data(bid: Bid):
         doc_ref_listing = db.collection('Listings').document(bid.listing)
 
         doc_ref_listing.update({
-            "bids": ArrayUnion([doc_ref.id])
+            "bids": ArrayUnion([doc_ref.id]),
+            "price":bid.amount
         })
+
+        
 
         return {"message": "Listing created successfully", "id": doc_ref.id}
     

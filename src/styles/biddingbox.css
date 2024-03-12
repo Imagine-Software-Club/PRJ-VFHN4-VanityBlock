@@ -1,0 +1,30 @@
+.BiddingBoxContainer{
+    border: 2px solid #232f60;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 1;
+    background-color: #fff;
+}
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.bid-format{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.redFont{
+    color: red;
+}
+
+.center-text{
+    text-align: center;
+}
+
