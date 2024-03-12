@@ -6,10 +6,9 @@ import CardMedia from '@mui/material/CardMedia';
 import Link from '@mui/material/Link';
 
 const sxOuterCard = {
-  height: 300,
-  width: 430,
-  border: "none",
-  boxShadow: "none",
+  height: 350,
+  width: 250,
+  borderRadius: 10
 };
 
 function Item(props) {
@@ -18,12 +17,12 @@ function Item(props) {
   return (
     <Box
       sx={{
-        p: 0.2,
+        p: 0.5,
         bgcolor: '#1C1C1D',
         border: '2px solid',
         borderColor: '#1C1C1D',
-        borderRadius: 1.5,
-        fontSize: '1.2rem',
+        borderRadius: 8,
+        fontSize: '1rem',
         fontWeight: '500',
         ...sx,
       }}
@@ -33,13 +32,11 @@ function Item(props) {
 }
 
 function ListingCard(props) {
-  // Parse endTime to get a Date object, then get the time in milliseconds
   const endTime = new Date(props.endTime).getTime();
-
   const calculateTimeLeft = () => {
-    const now = Date.now(); // Current time in milliseconds
-    const timeLeft = endTime - now; // Time left in milliseconds
-    return timeLeft / 1000; // Convert time left to seconds
+    const now = Date.now();
+    const timeLeft = endTime - now;
+    return timeLeft / 1000;
   };
 
   const [timer, setTimer] = React.useState(calculateTimeLeft());
@@ -69,67 +66,47 @@ function ListingCard(props) {
     return `$${parseFloat(price).toFixed(2)}`;
   };
 
-  // Access the first listing as an example
   const listing = props;
 
   return (
     <Link href={`/listings/${listing.id}`} underline="none">
       <Card sx={{ ...sxOuterCard }}>
-        <Box sx={{ position: 'relative' }}>
-          <CardMedia
-            component="img"
-            sx={{
-              objectFit: 'contain',
-              height: 300,
-              width: 430,
-              display: 'block',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-            image={listing.picture}
-            alt="Listing Image"
-          />
+        <CardMedia
+          component="img"
+          sx={{
+            objectFit: 'contain',
+            height: 200,
+            width: '100%', // Adjusted to 100% to show the whole image
+          }}
+          image={listing.picture}
+          alt="Listing Image"
+        />
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              width: '100%',
-              color: 'white',
-              padding: '10px',
-            }}
-          >
-            <Item>
-              <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-              }}>
-                <Box
-                  component="img"
-                  sx={{
-                    maxHeight: 20,
-                    maxWidth: 20,
-                    m: 0.5,
-                  }}
-                  alt="Clock Icon"
-                  src="images/Clock.png"
-                />
-                {timer > 0 ? formatTime(timer) : "Ended"}
-              </Box>
-            </Item>
-            <Item>{formatPrice(listing.price)}</Item>
-          </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: 'white',
+            p: 1,
+          }}
+        >
+          <Item>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+              <Box
+                component="img"
+                sx={{
+                  maxHeight: 20,
+                  maxWidth: 20,
+                }}
+                alt="Clock Icon"
+                src="images/Clock.png"
+              />
+              {timer > 0 ? formatTime(timer) : "Ended"}
+            </Box>
+          </Item>
+          <Item>{formatPrice(listing.price)}</Item>
         </Box>
-
-        <CardContent>
-          <h1>
-            <center>{listing.title}</center>
-          </h1>
-        </CardContent>
       </Card>
     </Link>
   );

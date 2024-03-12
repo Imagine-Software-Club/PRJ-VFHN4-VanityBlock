@@ -1,9 +1,7 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
-
 import Image from "next/image";
 import shareButton from "@/public/images/share-button.png";
 import InfoButton from "@/src/components/InfoButton";
@@ -18,6 +16,7 @@ export default function ListingPage() {
   const [error, setError] = useState(null);
   const [timer, setTimer] = useState(0);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [showBiddingBox, setShowBiddingBox] = useState(false); // State to control the visibility of BiddingBox
 
   const { listingId } = useParams();
 
@@ -76,6 +75,10 @@ export default function ListingPage() {
     setSelectedPhotoIndex(index);
   };
 
+  const toggleBiddingBox = () => {
+    setShowBiddingBox(!showBiddingBox);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -86,8 +89,6 @@ export default function ListingPage() {
 
   return (
     <div className="container">
-      {showBiddingBox &&<BiddingBox hideBox={hideBiddingBox} listing={listingId} state={state} licensePlate={licensePlate} date={yearIssued} price={price}></BiddingBox>}
-
       <div className="listing-info">
         <div className="main-content">
           <div className="info">
@@ -108,7 +109,7 @@ export default function ListingPage() {
             <a>
               <InfoButton info={`# ${listingData.bids.length}`} />
             </a>
-            <a className="bid-button">
+            <a className="bid-button" onClick={toggleBiddingBox}>
               <Image src={bidIcon} alt="" width={35} />
               <p>Place Bid</p>
             </a>
@@ -116,7 +117,7 @@ export default function ListingPage() {
         </div>
         <div className="right-column">
           <div className="share">
-            {/* Add your shareable component here */}
+            {/* Share component here */}
           </div>
           <div className="picture-grid">
             {listingData.picture.map((picture, index) => (
@@ -128,8 +129,10 @@ export default function ListingPage() {
         </div>
       </div>
 
+      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]} />}
+
       <div className="information-box">
-    <center><b><h1>Additional Information</h1></b></center>
+      <center><b><h1>Additional Information</h1></b></center>
     <br></br>
     <h3><b>Description</b></h3>
     <p>{listingData.description}</p>
@@ -138,10 +141,10 @@ export default function ListingPage() {
     <p>{listingData.flaws}</p>
     <br></br>
     <h3><b>State</b></h3>
-    <p>{listingData.state}</p>
+    <p>{listingData.stateIssued}</p>
     <br></br>
     <h3><b>Year Issued</b></h3>
-    <p>{listingData.year}</p>
+    <p>{listingData.yearIssued}</p>
     <br></br>
     <h3><b>Main Color</b></h3>
     <p>{listingData.mainColor}</p>
@@ -149,12 +152,7 @@ export default function ListingPage() {
     <h3><b>Accent Color</b></h3>
     <p>{listingData.accentColor}</p>
     <br></br>
-</div>
-
-      <br></br>
-        <br></br>
+      </div>
     </div>
-
-    
   );
 }

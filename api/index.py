@@ -118,7 +118,7 @@ def create_data(bid: Bid):
 
         doc_ref_listing.update({
             "bids": ArrayUnion([doc_ref.id]),
-            "price":bid.amount
+            "price": bid.amount
         })
 
         

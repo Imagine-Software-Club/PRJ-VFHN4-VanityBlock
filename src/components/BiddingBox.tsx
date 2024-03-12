@@ -1,160 +1,100 @@
 "use client"
 
-import React, { useEffect } from 'react';
-import { useState }  from "react"
-import '@/src/styles/biddingbox.css';
+import React, { useEffect, useState } from 'react';
+import '@/src/styles/biddingbox.css'; // Ensure CSS is properly structured for responsiveness
 import Image from 'next/image';
-import {  } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, FormControl, IconButton, InputAdornment, TextField } from '@mui/material';
-import InfoButton from './InfoButton';
-import { formatISO } from 'date-fns';
+import { Button, FormControl, IconButton, TextField } from '@mui/material';
 
+export default function BiddingBox(props) {
+  const [timer, setTimer] = useState(24 * 60 * 60);
 
-
-export default function BiddingBox(props: any) {
-
-  const [timer, setTimer] = React.useState(24 * 60 * 60);
-  
-  React.useEffect(() => {
+  useEffect(() => {
     const intervalId = setInterval(() => {
-      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+      setTimer(prevTimer => (prevTimer > 0 ? prevTimer - 1 : 0));
     }, 1000);
-
-    // Cleanup the interval when the component unmounts or when the timer reaches 0
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array to run the effect only once
+  }, []);
 
+  const [bidData, setBidData] = useState({
+    amount: 0,
+    listing: props.listing,
+    timeDate: "",
+    user: "S7mgDyrVTj39tjpZYbn8",
+    verified: true,
+  });
 
-
-  const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  const updateDictionary = (key, value) => {
+    setBidData(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
   };
 
-    const [bidData, setbidData] = useState({
-      amount: 0,
-      listing: props.listing,
-      timeDate: "",
-      user: "S7mgDyrVTj39tjpZYbn8",
-      verified: true,
-    });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log(bidData);
 
+        const response = await fetch('http://localhost:8000/post-bid', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(bidData),
+        });
 
-    
-        // Function to update a specific key within the dictionary
-    const updateDictionary = (key, value) => {
-      console.log(bidData);
-      setbidData(prevState => ({
-        ...prevState, // Spread the previous state
-        [key]: value // Update the value of the specified key
-      }));
-      console.log(bidData);
-    };
-
-    useEffect(() => {
-      const fetchData = async () =>{
-        try {
-          const response = await fetch('http://localhost:8000/post-bid', {  // Adjust the URL/port as needed
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(bidData),
-          });
-    
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          props.hideBox()
-          const data = await response.json();
-          
-          // Handle success response
-        } catch (error) {
-          console.error('Error posting listing:', error);
-          
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        props.hideBox();
+        // const data = await response.json(); // If you need to use the response data
+      } catch (error) {
+        console.error('Error posting listing:', error);
       }
-      fetchData();
-    }, [bidData["timeDate"]]);
-    
-    const submitBid = async (e) => {
-      e.preventDefault(); // Prevent default form submission behavior
-
-      if(bidData["amount"] <= props.price){
-        return;
-      }
-
-      const dateISO = new Date().toISOString();
-      updateDictionary("timeDate",dateISO);
-
-      // API stuff goes here
-      
-    
     };
-    return (
-        <div className='BiddingBoxContainer'>
-            <Button disableRipple style={{ 
-              backgroundColor: 'transparent',
-              justifyContent: 'flex-end'
-              }}>
-              <IconButton aria-label="close" onClick={props.hideBox}>
-                <CloseIcon/>
-              </IconButton>
-            </Button>
-            {props.image ? <Image src={props.icon} alt="Image of the bidding plate"/> : null}
 
-            <p className="title">{props.state} {props.licensePlate} {props.date}</p>
-            <p className='center-text'>Time Left <span className='redFont'>{formatTime(timer)}</span></p>
-            <p className='center-text'>Current Bid <span className='redFont'>{props.price}</span></p>
-            <FormControl >
-              <div className='bid-format'>
-                    <TextField 
-                        required
-                        variant="outlined"
-                        id="searchBar"
-                        type='number'
-                        
-                        
-                        onChange={(event)=>{
-                          if(event.target.value > props.price){
-                            updateDictionary("amount", event.target.value);
-                          }
-                          
-                        }}
-                        InputProps={{
-                            style:{
-                                color:"#9595a6"
-                            }
-                        }}
-                        inputProps={{
-                            step:0.01,
-                        }}
-                        placeholder={"Bid $" + (props.price+1) +" or more"}
-                        sx={{
-                            '.MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#1c1c1d',
-                            },
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#1c1c1d',
-                            },
-                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#1c1c1d',
-                            },
-                            '.MuiSvgIcon-root': {
-                              fill: "#1c1c1d !important",                            }
-                          }}
-                    />
-                    <Button style={{ backgroundColor: '#242e5e', color: 'white' }} variant="contained"
-                      onClick={submitBid}
-                    >
-                      Buy
-                    </Button>
-                </div>
+    if (bidData.timeDate) fetchData();
+  }, [bidData.timeDate, bidData, props]);
 
-            </FormControl>
+  const submitBid = async (e) => {
+    e.preventDefault();
+    if (bidData["amount"] <= props.price) {
+      updateDictionary("amount", props.price);
+      return;
+    }
+
+    const dateISO = new Date().toISOString();
+    updateDictionary("timeDate", dateISO);
+    
+  };
+
+  return (
+    <div className='BiddingBoxContainer'>
+      <IconButton aria-label="close" onClick={props.hideBox} style={{ position: 'absolute', right: '10px', top: '10px' }}>
+        <CloseIcon/>
+      </IconButton>
+      {props.image && <Image src={props.icon} alt="Image of the bidding plate" width={100} height={100} />} {/* Adjust size as needed */}
+
+      <br></br>
+      <br></br>
+      <p className='center-text'>Current Bid <span className='redFont'>${props.price}</span></p>
+      <FormControl>
+        <div className='bid-format' style={{ margin: '10px' }}>
+          <TextField 
+            required
+            variant="outlined"
+            id="bidAmount"
+            type='number'
+            onChange={(event) => updateDictionary("amount", event.target.value)}
+            placeholder={`Bid $${parseFloat(props.price) + 1} or more`}
+            fullWidth
+          />
+          <Button variant="contained" onClick={submitBid} style={{ margin: '10px' }}>
+            Bid
+          </Button>
         </div>
-    )
+      </FormControl>
+    </div>
+  );
 }
