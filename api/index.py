@@ -6,13 +6,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import ArrayUnion
 
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+
+from firebase_admin import credentials, firestore, auth
 
 from pydantic import BaseModel
 from typing import List
 import logging
 
+
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 cred = credentials.Certificate('./api/credentials.json')
@@ -168,4 +170,36 @@ def create_data(bid: Bid):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class SignUpSchema(BaseModel):
+    email : str
+    password : str
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email":"sample@gmail.com",
+                "password":"samplepassword",
+            }
+        }
+
+@app.post("/sign-up")
+def create_an_account(user_data: SignUpSchema):
+    email = user_data.email
+    password = user_data.password
+    id = user_data.id
+
+    try:
+        user = auth.create_user(
+            email = email,
+            password = password
+        )
+        return JSONResponse(content = {"message" : f"User account created sucessfully for user {id} "},
+                            status_code = 201
+               )
+    except auth.EmailAlreadyExistsError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Account already created for the email {email}"
+        )
 
