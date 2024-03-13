@@ -29,6 +29,7 @@ export default function ListingPage() {
         }
 
         const data = await response.json();
+        console.log(data);
         setListingData(data);
 
         const endTime = new Date(data.endTime).getTime();
@@ -92,11 +93,25 @@ export default function ListingPage() {
       <div className="listing-info">
         <div className="main-content">
           <div className="info">
+          {listingData && 'title' in listingData ? (
             <p className="title">{listingData.title}</p>
-            <p className="location">{listingData.location}</p>
+              ) : (
+                <p className="title">Title Not Found</p>
+              )}
+
+              {listingData && 'location' in listingData ? (
+                <p className="location">{listingData.location}</p>
+              ) : (
+                <p className="location">Location Not Found</p>
+            )}
+
           </div>
           <div className="main-photo-container">
-            <Image alt="License plate main photo" className="main-photo" width="100" height="100" src={listingData.picture[selectedPhotoIndex]} />
+            {listingData && 'picture' in listingData ? (
+              <Image alt="License plate main photo" className="main-photo" width="100" height="100"src={listingData.picture[selectedPhotoIndex] ?? "NEED TO CHANGE TO NOT FOUND"}/>
+            ) : (
+              <Image alt="License plate main photo" className="main-photo" width="100" height="100" src={"NEED TO CHANGE TO NOT FOUND"}/>
+            )}
           </div>
           <div className="bid-info">
             <br></br>

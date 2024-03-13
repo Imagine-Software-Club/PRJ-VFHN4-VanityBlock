@@ -30,7 +30,7 @@
     align-self: center;
     flex-direction: column;
     margin-bottom: 2vh;
-    background-color: #B8E2F2;
+    background-color: #F4F6FF;
     opacity: 0.7;
     border-radius: 10px;
 }
@@ -41,7 +41,7 @@
 
 .information p {
     margin-left: 5px;
-    color: #1134A6;
+    color: #222E61;
     text-align: center;
 }
 
@@ -59,6 +59,7 @@
     display: flex;
     justify-content: center; /* Center along the main axis (horizontally) */
     align-items: center;
+    flex-direction: row;
     
 }
 
@@ -88,6 +89,7 @@
     margin-left: 5px;
     margin-right: 5px;
     text-align: center;
+
 }
 
 .inputs input {
@@ -128,5 +130,47 @@ textarea {
     font-size: small;
     width: 50%;
     margin-left: 5px;
+    border: 1px solid black;
+    border-radius: 6px;
 
+
+}
+
+#posting-description-one {
+    margin-top: 20px;
+}
+
+#posting-description-two {
+    margin-top: 10px;
+    color: #222E61;
+
+}
+
+#post-buttons-container {
+    display: flex;
+
+}
+
+#Schedule-Post {
+    background-color: #222E61;
+    color: #FFFFFF;
+    border: 1px solid black;
+    font-size: small;
+    margin: 5px;
+    padding: 2px;
+    border-radius: 6px;
+
+
+}
+
+#Post-Now {
+    background-color: #FFFFFF;
+    color:#222E61;
+    border: 1px solid black;
+    font-size: small;
+    margin: 5px;
+    padding: 2px;
+    border-radius: 6px;
+
+    
 }

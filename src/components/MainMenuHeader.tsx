@@ -14,12 +14,19 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import SearchIcon from '@mui/icons-material/Search';
 import { BorderColor } from "@mui/icons-material";
 
-export default function MainMenuHeader() {
+export default function MainMenuHeader( {onSearch} ) {
     const [age, setAge] = useState('Past');
+    const [searchInput, setSearchInput] = useState('');
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value);
+    const handleChange = (e) => {
+        //Updates search value
+        setSearchInput(e.target.value);
     };
+    
+    const onEnter = async () => {
+      onSearch(searchInput);
+    };
+    
 
     const handleSearch = () => {
         // Implement your search logic here
@@ -89,6 +96,14 @@ export default function MainMenuHeader() {
                           },
                           '.MuiSvgIcon-root': {
                             fill: "#1c1c1d !important",
+                          }
+                        }}
+                        value={searchInput}
+                        onChange={handleChange}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            onEnter();
+                            event.preventDefault();
                           }
                         }}
                     />
