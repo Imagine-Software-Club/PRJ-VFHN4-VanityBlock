@@ -8,7 +8,7 @@ const SideBar = () => {
       <nav className="sidebar-nav">
         <a href="/about" className="sidebar-link">About Us</a>
         <a href="/what-is-vanity-block" className="sidebar-link">What is Vanity Block?</a>
-        <a href="/how-it-works" className="sidebar-link">How it works</a>
+        <p className="sidebar-link">How it works</p>
         <a href="/buying-a-plate" className="sidebar-link">Buying a Plate</a>
         <a href="/selling-a-plate" className="sidebar-link">Selling a Plate</a>
         <a href="/finalizing-a-deal" className="sidebar-link">Finalizing a Deal</a>
