@@ -7,12 +7,11 @@ const SideBar = () => {
     <div className="sidebar-container">
       <nav className="sidebar-nav">
         <a href="/about" className="sidebar-link">About Us</a>
-        <a href="/what-is-vanity-block" className="sidebar-link">What is Vanity Block?</a>
-        <p className="sidebar-link">How it works</p>
-        <a href="/buying-a-plate" className="sidebar-link">Buying a Plate</a>
-        <a href="/selling-a-plate" className="sidebar-link">Selling a Plate</a>
-        <a href="/finalizing-a-deal" className="sidebar-link">Finalizing a Deal</a>
-        <a href="/faq" className="sidebar-link">FAQ</a>
+        <a href="/about/what-is-vanity-block" className="sidebar-link">What is Vanity Block?</a>
+        <a href="/about/buying-a-plate" className="sidebar-link">Buying a Plate</a>
+        <a href="/about/selling-a-plate" className="sidebar-link">Selling a Plate</a>
+        <a href="/about/finalizing-a-deal" className="sidebar-link">Finalizing a Deal</a>
+        <a href="/about/faq" className="sidebar-link">FAQ</a>
       </nav>
     </div>
   );

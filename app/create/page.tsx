@@ -223,19 +223,17 @@ export default function Create() {
                 <div className="information">
                     <p>Auction Details and Posting</p>
                     <div className="label">
-                        <div className="set-starting-price">
+                        <div className="inputs">
                             <label className="starting-label">Starting Price:</label>
                             <input type="text" className="starting-price" name="price" placeholder="$ Optional" value={formData.startingPrice} onChange={handleChange}></input>
-                            <p id="posting-description-one" >The duration of ALL listings last 7 days</p>
-                            <p id="posting-description-two"> Would you like to post your listing now or schedule a post time?</p>
-                            <div id="post-buttons-container">
+                            <p id="posting-description-one" >The duration of ALL listings last 7 days from creation</p>
+                            <p id="posting-description-one" >Default price starts at $1</p>
+                            {/* <p id="posting-description-two"> Would you like to post your listing now or schedule a post time?</p> */}
+                            {/* <div id="post-buttons-container">
                                 <button id="Schedule-Post"> Schedule Post </button>
                                 <button id="Post-Now"> Post Now </button>
-                            </div>
+                            </div> */}
                         </div>
-                        
-                        <br></br>
-
                         <br></br>
                     </div>
                 </div>

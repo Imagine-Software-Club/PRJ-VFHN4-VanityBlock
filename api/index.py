@@ -9,6 +9,8 @@ import firebase_admin
 
 from firebase_admin import credentials, firestore, auth
 
+from fastapi import status
+
 from pydantic import BaseModel
 from typing import List
 import logging
@@ -187,7 +189,7 @@ class SignUpSchema(BaseModel):
 def create_an_account(user_data: SignUpSchema):
     email = user_data.email
     password = user_data.password
-    id = user_data.id
+    # id = user_data.id
 
     try:
         user = auth.create_user(
@@ -197,9 +199,28 @@ def create_an_account(user_data: SignUpSchema):
         return JSONResponse(content = {"message" : f"User account created sucessfully for user {id} "},
                             status_code = 201
                )
+    
     except auth.EmailAlreadyExistsError:
         raise HTTPException(
             status_code=400,
             detail=f"Account already created for the email {email}"
         )
 
+    
+class LoginSchema(BaseModel):
+    email: str
+    password: str
+
+    
+@app.post("/login")
+async def login(user_credentials: LoginSchema):
+    try:
+        user = auth.get_user_by_email(user_credentials.email)
+        # Attempt to sign in the user with the given email and password
+        token = auth.create_custom_token(user.uid)
+        return {"token": token}
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
