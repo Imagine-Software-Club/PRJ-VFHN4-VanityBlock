@@ -1,89 +1,176 @@
-.wrapper{
+/* Wrapper styles */
+.wrapper {
     display: flex;
-    /* border:1px solid black; */
     justify-content: center;
     width: 100%;
     height: 100%;
 }
 
-.container{
-    font-weight:bold;
+/* Container styles */
+.container {
+    font-weight: bold;
     font-family: Verdana;
-    width:50%;
+    width: 50%;
     font-size: 25px;
     display: flex;
-    /* border: 1px solid black; */
     align-items: flex-start;
     flex-direction: column;
 }
-.container button{
+
+.container button {
     align-self: center;
     margin-bottom: 15px;
 }
 
-.information{
+/* Information styles */
+.information {
     font-family: Verdana;
-    width:100%;
-    font-size: 17px;
+    width: 100%;
     display: flex;
-    align-self:center;
-    flex-direction: column; /*TEMPORARY*/
+    align-self: center;
+    flex-direction: column;
     margin-bottom: 2vh;
-    background-color: #B8E2F2;
-    opacity:0.7;
+    background-color: #F4F6FF;
+    opacity: 0.7;
     border-radius: 10px;
-    /* border: 1px solid black; */
-    color: #1134A6;
-}
-.information p{
-    margin-left:5px;
-    color: #1134A6;
 }
 
-.label p{
-    font-size:12px;
-    margin-right:4px;
-    color:black;
+.label {
+    text-align: center;
 }
 
-.input_row{
-    display:flex;
-    /* align-items:center; */
-}
-.input_row button{
-    margin-top:10px;
-    margin-right:10px;
-    margin-left:5px;
+.information p {
+    margin-left: 5px;
+    color: #222E61;
+    text-align: center;
 }
 
-.schedule_post{
-    margin-top:4px;
+/* Label styles */
+.label p {
+    font-size: 12px;
+    margin-right: 4px;
+    color: black;
+    text-align: center;
+    
+}
+
+/* Input row styles */
+.input_row {
+    display: flex;
+    justify-content: center; /* Center along the main axis (horizontally) */
+    align-items: center;
+    flex-direction: row;
+    
+}
+
+.input_row button {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+/* Schedule post styles */
+.schedule_post {
+    margin-top: 4px;
     margin-bottom: 8px;
-    border:1px solid black;
+    border: 1px solid black;
     border-radius: 6px;
-    width:25%;
-    height:40px;
-    color: none;
+    width: 25%;
+    height: 40px;
     font-size: small;
-    font-weight:normal;
+    font-weight: normal;
     color: black;
 }
 
-.inputs{
-    display:flex;
-    flex-direction:column;
-    margin-left:5px;
-    margin-right:5px;
+/* Inputs styles */
+.inputs {
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+
 }
 
-.inputs input{
-    margin-top:4px;
+.inputs input {
+    margin-top: 4px;
     margin-bottom: 8px;
-    border:1px solid black;
+    border: 1px solid black;
     border-radius: 6px;
-    width:100%;
-    color: none;
+    width: 100%;
     font-size: small;
-    font-weight:normal;
+    font-weight: normal;
     color: black;
+    text-align: center;
+}
+
+textarea {
+    font-size: small;
+}
+
+.set-starting-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+
+
+.starting-label {
+    color: #222E61;
+    margin-left: 5px;
+    font-size: small;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+}
+
+.starting-price {
+    color: #9595A6;
+    font-size: small;
+    width: 50%;
+    margin-left: 5px;
+    border: 1px solid black;
+    border-radius: 6px;
+
+
+}
+
+#posting-description-one {
+    margin-top: 20px;
+}
+
+#posting-description-two {
+    margin-top: 10px;
+    color: #222E61;
+
+}
+
+#post-buttons-container {
+    display: flex;
+
+}
+
+#Schedule-Post {
+    background-color: #222E61;
+    color: #FFFFFF;
+    border: 1px solid black;
+    font-size: small;
+    margin: 5px;
+    padding: 2px;
+    border-radius: 6px;
+
+
+}
+
+#Post-Now {
+    background-color: #FFFFFF;
+    color:#222E61;
+    border: 1px solid black;
+    font-size: small;
+    margin: 5px;
+    padding: 2px;
+    border-radius: 6px;
+
+    
 }

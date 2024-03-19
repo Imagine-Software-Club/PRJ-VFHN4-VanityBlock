@@ -20,6 +20,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       <body className={inter.className}>
         <header>
           {/* Navbar Component */}
+          
           <Navbar />
         </header>
         {children}

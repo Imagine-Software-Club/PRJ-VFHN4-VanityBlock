@@ -5,6 +5,7 @@ import ListingCard from '@/src/components/ListingCard';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import MainMenuHeader from '@/src/components/MainMenuHeader';
 import { Box } from '@mui/material';
+import { CompressOutlined } from '@mui/icons-material';
 
 async function getAllListings() {
   const res = await fetch("http://127.0.0.1:8000/listings");
@@ -14,21 +15,56 @@ async function getAllListings() {
   return res.json();
 }
 
+async function FilterListings(searchInput) {
+  
+
+    const res = await fetch(`http://localhost:8000/listings/filtered?query=${encodeURIComponent(searchInput)}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch filtered data");
+    }
+
+    return res.json();
+    
+}
+
 const Homepage = () => {
+  
   const [allListings, setAllListings] = useState([]);
+
+  //Added
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+
+  const [searchVal,setSearchVal]  = useState("");
+
+  const onSearch = async (searchInput) => {
+    setIsSearchTriggered(true);
+    setSearchVal(searchInput);
+    console.log(searchVal);
+
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const upcomingData = await getAllListings();
-      setAllListings(upcomingData["Listings"]);
+
+      if (!isSearchTriggered) {
+        const upcomingData = await getAllListings();
+        console.log(upcomingData);
+        setAllListings(upcomingData["Listings"]);
+      } else {
+        const upcomingData = await FilterListings(searchVal);
+        console.log(upcomingData);
+
+        setAllListings(upcomingData["Listings"]);
+      }
+
     };
     fetchData();
-  }, []);
+  }, [isSearchTriggered,searchVal]);
 
   return (
     <center>
       <Box>
-        <MainMenuHeader />
+        <MainMenuHeader onSearch={onSearch} />
         <br /><br />
         <Grid container spacing={4} justifyContent="center">
           {allListings.map((listing, index) => (
@@ -36,9 +72,16 @@ const Homepage = () => {
             <Grid key={index} item xs={12} sm={6} md={4}>
               <ListingCard
                 name={listing["plateNumber"]}
-                time={listing["firstName"]}
-                price={listing["lastName"]}
+                endTime={listing["endTime"]}
+                price={listing["price"]}
                 id={listing["id"]}
+                picture={listing["picture"] && listing["picture"][0] ? listing["picture"][0] : "defaultImageURL"}
+                description={listing["description"]}
+                flaws={listing["flaws"]}
+                mainColor={listing["mainColor"]}
+                accentColor = {listing["accentColor"]}
+                year = {listing["yearIssued"]}
+                state = {listing["stateIssued"]}
               />
             </Grid>
           ))}

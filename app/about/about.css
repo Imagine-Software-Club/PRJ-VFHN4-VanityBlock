@@ -1,20 +1,64 @@
 .container {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .sidebar {
-    flex: 0 0 20%;
-    background-color: #ffffff;
-    color: white;
-  }
-  
-  .content {
-    flex: 1;
-    padding: 1px;
-  }
-  
-  .content-title {
-    flex: 1;
-    padding: 1px;
-  }
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  flex: 0 0 20%;
+  background-color: #ffffff;
+  color: black; /* Changed to black for readability on a white background */
+}
+
+.content {
+  display: flex; /* Added to make .content a flex container */
+  flex-direction: column; /* Stack .content-title, .images-container, and .text-content vertically */
+  flex: 0 0 80%;
+  padding: 1px;
+}
+
+.content-body {
+  display: flex;
+  flex-direction: row; /* Set the direction to row to align items horizontally */
+}
+
+.content-title {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  color: #333;
+  font-size: 35px; /* Adjusted for a more reasonable font size */
+  font-weight: bold;
+  flex: 0 0 auto; /* Added to prevent the title from growing */
+}
+
+.images-container {
+  display: flex; /* Changed from 'display: 0 0 30%;' which is invalid */
+  position: relative; 
+  flex: 0 0 25%;
+  padding: 10px;
+}
+.image-top {
+  z-index: 1;
+  left: 10px; /* Shift the top image to the right by 10px */
+  top: 15px;
+  width: 100%; 
+  height: auto;
+}
+
+.image-bottom {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  width: 95%; 
+  height: auto;
+}
+
+.text-content {
+  flex: 0 0 75%;
+  padding: 5px;
+  background-color: #fff;
+  color: #333;
+  overflow-y: auto;
+  left: 10px
+}

@@ -1,76 +1,94 @@
-'use client';
-
-import React from "react";
-import {useState} from 'react';
+"use client";
+import React, { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
-import '../css/listingpage.css';
+import '@/app/listings/css/listingpage.css';
 import Image from "next/image";
-import shareButton from "../images/share-button.png";
+import shareButton from "@/public/images/share-button.png";
 import InfoButton from "@/src/components/InfoButton";
 import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
+import BiddingBox from "@/src/components/BiddingBox";
 
+export default function ListingPage() {
+  const [listingData, setListingData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [timer, setTimer] = useState(0);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [showBiddingBox, setShowBiddingBox] = useState(false); // State to control the visibility of BiddingBox
 
-async function getData() {
-  const {listingId} = useParams();
-  const res = await fetch(`http://localhost:8000/listings/${listingId}`)
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
+  const { listingId } = useParams();
 
-  return res.json()
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/listings/${listingId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
 
+        const data = await response.json();
+        console.log(data);
+        setListingData(data);
 
-export default function Page() {
-  const jsonRes = getData();
-  const [licensePlate, setLicensePlate] = useState("");
-  const [yearIssued, setYearIssued] = useState("");
-  const [state, setState] = useState("");
-  const [price, setPrice] = useState(0);
-  const [photo, setPhoto] = useState("");
-  const [zip, setZip] = useState(0);
-  // const [stateAbbr, setStateAbbr] = useState("");
-  // const [city, setCity] = useState("");
-  // const [photos, setPhotos] = useState([] as string[]);
-  jsonRes.then(data => ({
-    data: data
-  })
-  ).then(jsonRes => {
-    setLicensePlate(jsonRes.data["plateNumber"]);
-    setYearIssued(jsonRes.data["yearIssued"]);
-    setState(jsonRes.data["stateIssued"]);
-    setPrice(jsonRes.data["price"]);
-    setPhoto(jsonRes.data["picture"][0]);
-    setZip(jsonRes.data["zip"]);
+        const endTime = new Date(data.endTime).getTime();
+        const calculateTimeLeft = () => {
+          const now = Date.now();
+          const timeLeft = endTime - now;
+          return timeLeft / 1000;
+        };
 
-    // var photos = [];
-    // for (var i = 0; jsonRes.data["Picture"].length; i++) {
-    //   setPhotos([...photos, jsonRes.data["Picture"][i]]);
-    // }
-  });
+        setTimer(calculateTimeLeft());
 
-  const formattedPrice = isNaN(price) ? "Invalid Price" : `$${price.toFixed(2)}`;
+        const intervalId = setInterval(() => {
+          const timeLeft = calculateTimeLeft();
+          if (timeLeft > 0) {
+            setTimer(timeLeft);
+          } else {
+            clearInterval(intervalId);
+            setTimer(0);
+          }
+        }, 1000);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const [timer, setTimer] = React.useState(24 * 60 * 60); // 24 hours in seconds
-
-  React.useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
-    }, 1000);
-
-    // Cleanup the interval when the component unmounts or when the timer reaches 0
-    return () => clearInterval(intervalId);
-  }, []); // Empty dependency array to run the effect only once
+    fetchData();
+  }, [listingId]);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+    const remainingSeconds = Math.floor(seconds % 60);
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
+
+  const formatPrice = (price) => {
+    return `$${parseFloat(price).toFixed(2)}`;
+  };
+
+  const handlePhotoClick = (index) => {
+    setSelectedPhotoIndex(index);
+  };
+
+  const toggleBiddingBox = () => {
+    setShowBiddingBox(!showBiddingBox);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // import { getAuth, onAuthStateChanged } from "firebase/auth";
 
   // const auth = getAuth();
   // onAuthStateChanged(auth, (user) => {
@@ -84,74 +102,87 @@ export default function Page() {
   //     // ...
   //   }
   // });
-return(
-  <div className="container">
-      <div className="listing-info">
-          <div className="main-content">
-              <div className="info">
-                  <div className="title">
-                    <p>{state}</p> 
-                    <p>{licensePlate}</p>
-                    <p>{yearIssued.slice(0,4)}</p>
-                  </div>
-                  <div className="location">
-                    <p>
-                      {}
-                    </p>
-                    {/* <p>{city}</p>
-                    <p>{stateAbbr},</p>
-                    <p>{zip}</p> */}
-                  </div>
-              </div>
-              <div className="main-photo-container">
-                  <img alt="License plate main photo" className="main-photo" src={photo}/>
-              </div>
-              <div className="bid-info">
-                  <a>
-                      <InfoButton icon={clockIcon}info={formatTime(timer)}/>
-                  </a>
-                  <a>
 
-                  <InfoButton icon={blueHammer} info={formattedPrice} />
-                  </a>
-                  <a>
-                      <InfoButton info={"# " + 0}/>
-                  </a>
-                  <a className="bid-button">
-                      <Image src={bidIcon} alt="" width={35}/>
-                      <p>Place Bid</p>
-                  </a>
-              </div>
+  return (
+    <div className="container">
+      <div className="listing-info">
+        <div className="main-content">
+          <div className="info">
+          {listingData && 'title' in listingData ? (
+            <p className="title">{listingData.title}</p>
+              ) : (
+                <p className="title">Title Not Found</p>
+              )}
+
+              {listingData && 'location' in listingData ? (
+                <p className="location">{listingData.location}</p>
+              ) : (
+                <p className="location">Location Not Found</p>
+            )}
+
           </div>
-          <div className="right-column">
-              <div className="share">
-                  <a className="share-link">
-                      <Image src={shareButton} alt="Share button" className="share-icon"/>
-                  </a>
-              </div>
-              <div className="picture-grid">
-                  <a className="photo">
-                    <img alt="other photo" className="small-photo" src={photo}/>
-                  </a>
-                  <a className="photo">
-                    <img alt="other photo" className="small-photo" src={photo}/>
-                  </a>
-                  <a className="photo">
-                    <img alt="other photo" className="small-photo" src={photo}/>
-                  </a>
-                  <div className="photo">
-                  </div>
-                  <div className="photo">
-                  </div>
-                  <div className="photo">
-                  </div>
-                  <div className="photo">
-                  </div>
-                  <div className="photo">
-                  </div>
-              </div>
+          <div className="main-photo-container">
+            {listingData && 'picture' in listingData ? (
+              <Image alt="License plate main photo" className="main-photo" width="100" height="100"src={listingData.picture[selectedPhotoIndex] ?? "NEED TO CHANGE TO NOT FOUND"}/>
+            ) : (
+              <Image alt="License plate main photo" className="main-photo" width="100" height="100" src={"NEED TO CHANGE TO NOT FOUND"}/>
+            )}
           </div>
+          <div className="bid-info">
+            <br></br>
+            <a>
+              <InfoButton icon={clockIcon} info={timer > 0 ? formatTime(timer) : 'Ended'} />
+            </a>
+            <a>
+              <InfoButton icon={blueHammer} info={formatPrice(listingData.price)} />
+            </a>
+            <a>
+              <InfoButton info={`# ${listingData.bids.length}`} />
+            </a>
+            <a className="bid-button" onClick={toggleBiddingBox}>
+              <Image src={bidIcon} alt="" width={35} />
+              <p>Place Bid</p>
+            </a>
+          </div>
+        </div>
+        <div className="right-column">
+          <div className="share">
+            {/* Share component here */}
+          </div>
+          <div className="picture-grid">
+            {listingData.picture.map((picture, index) => (
+              <div key={index} className={`photo ${index === selectedPhotoIndex ? 'selected' : ''}`} onClick={() => handlePhotoClick(index)}>
+                <Image alt={`Other photo ${index + 1}`} width="100" height="100" className="small-photo" src={picture} />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-  </div>
-);
+
+      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]} />}
+
+      <div className="information-box">
+      <center><b><h1>Additional Information</h1></b></center>
+    <br></br>
+    <h3><b>Description</b></h3>
+    <p>{listingData.description}</p>
+    <br></br>
+    <h3><b>Flaws</b></h3>
+    <p>{listingData.flaws}</p>
+    <br></br>
+    <h3><b>State</b></h3>
+    <p>{listingData.stateIssued}</p>
+    <br></br>
+    <h3><b>Year Issued</b></h3>
+    <p>{listingData.yearIssued}</p>
+    <br></br>
+    <h3><b>Main Color</b></h3>
+    <p>{listingData.mainColor}</p>
+    <br></br>
+    <h3><b>Accent Color</b></h3>
+    <p>{listingData.accentColor}</p>
+    <br></br>
+      </div>
+    </div>
+  );
 }

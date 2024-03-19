@@ -1,29 +1,28 @@
 import * as React from 'react';
-import Box, { BoxProps } from '@mui/material/Box';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Link from '@mui/material/Link';
 
 const sxOuterCard = {
-  height: 300,
-  width: 430,
-  border: "none",
-  boxShadow: "none",
+  height: 350,
+  width: 250,
+  borderRadius: 10
 };
 
-function Item(props: BoxProps) {
+function Item(props) {
   const { sx, ...other } = props;
 
   return (
     <Box
       sx={{
-        p: 0.2,
+        p: 0.5,
         bgcolor: '#1C1C1D',
         border: '2px solid',
         borderColor: '#1C1C1D',
-        borderRadius: 1.5,
-        fontSize: '1.2rem',
+        borderRadius: 8,
+        fontSize: '1rem',
         fontWeight: '500',
         ...sx,
       }}
@@ -32,83 +31,82 @@ function Item(props: BoxProps) {
   );
 }
 
-function ListingCard(props: any) {
-  const [timer, setTimer] = React.useState(24 * 60 * 60); // 24 hours in seconds
+function ListingCard(props) {
+  const endTime = new Date(props.endTime).getTime();
+  const calculateTimeLeft = () => {
+    const now = Date.now();
+    const timeLeft = endTime - now;
+    return timeLeft / 1000;
+  };
+
+  const [timer, setTimer] = React.useState(calculateTimeLeft());
 
   React.useEffect(() => {
     const intervalId = setInterval(() => {
-      setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
+      const timeLeft = calculateTimeLeft();
+      if (timeLeft > 0) {
+        setTimer(timeLeft);
+      } else {
+        clearInterval(intervalId);
+        setTimer(0);
+      }
     }, 1000);
 
-    // Cleanup the interval when the component unmounts or when the timer reaches 0
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array to run the effect only once
+  }, [endTime]);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+    const remainingSeconds = Math.floor(seconds % 60);
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
+  const formatPrice = (price) => {
+    return `$${parseFloat(price).toFixed(2)}`;
+  };
+
+  const listing = props;
+
   return (
-    <Link href={`/listings/${props.id}`} underline="none">
+    <Link href={`/listings/${listing.id}`} underline="none">
       <Card sx={{ ...sxOuterCard }}>
-        <Box sx={{ position: 'relative' }}>
-          <CardMedia
-            component="img"
-            sx={{
-              objectFit: 'contain',
-              height: 300,
-              width: 430,
-              display: 'block',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-            image="images/PlateExample.jpg"
-            alt="Listing Image"
-          />
+        <CardMedia
+          component="img"
+          sx={{
+            objectFit: 'contain',
+            height: 200,
+            width: '100%', // Adjusted to 100% to show the whole image
+          }}
+          image={listing.picture}
+          alt="Listing Image"
+        />
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              width: '100%',
-              color: 'white',
-              padding: '10px',
-            }}
-          >
-            <Item>
-              <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-              }}>
-                <Box
-                  component="img"
-                  sx={{
-                    maxHeight: 20,
-                    maxWidth: 20,
-                    m: 0.5,
-                  }}
-                  alt="Clock Icon"
-                  src="images/Clock.png"
-                />
-                {formatTime(timer)}
-              </Box>
-            </Item>
-            <Item>{props.price}</Item>
-          </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: 'white',
+            p: 1,
+          }}
+        >
+          <Item>
+            <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+              <Box
+                component="img"
+                sx={{
+                  maxHeight: 20,
+                  maxWidth: 20,
+                }}
+                alt="Clock Icon"
+                src="images/Clock.png"
+              />
+              {timer > 0 ? formatTime(timer) : "Ended"}
+            </Box>
+          </Item>
+          <Item>{formatPrice(listing.price)}</Item>
         </Box>
-
-        <CardContent>
-          <h1>
-            <center>{props.name}</center>
-          </h1>
-        </CardContent>
       </Card>
     </Link>
   );
