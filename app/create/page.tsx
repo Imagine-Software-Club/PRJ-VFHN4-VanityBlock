@@ -58,7 +58,7 @@ export default function Create() {
             // Handle error
         }
 
-        window.location.reload();
+        // window.location.reload();
 
 
     };
@@ -225,7 +225,7 @@ export default function Create() {
                     <div className="label">
                         <div className="inputs">
                             <label className="starting-label">Starting Price:</label>
-                            <input type="text" className="starting-price" name="price" placeholder="$ Optional" value={formData.startingPrice} onChange={handleChange}></input>
+                            <input type="number" className="starting-price" name="price" placeholder="$ Optional" value={formData.startingPrice} onChange={handleChange}></input>
                             <p id="posting-description-one" >The duration of ALL listings last 7 days from creation</p>
                             <p id="posting-description-one" >Default price starts at $1</p>
                             {/* <p id="posting-description-two"> Would you like to post your listing now or schedule a post time?</p> */}
