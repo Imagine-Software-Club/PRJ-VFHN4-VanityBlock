@@ -58,7 +58,7 @@ export default function Create() {
             // Handle error
         }
 
-        // window.location.reload();
+        window.location.reload();
 
 
     };
