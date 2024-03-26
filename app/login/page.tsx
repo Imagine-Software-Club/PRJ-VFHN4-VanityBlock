@@ -141,7 +141,7 @@ function Center(props: any) {
     );
 }
 
-export default function SignUp(){
+export default function Login(){
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -171,7 +171,7 @@ export default function SignUp(){
         console.log(signUp);
 
         try {
-            const response = await fetch('http://localhost:8000/sign-up', {
+            const response = await fetch('http://localhost:8000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -187,14 +187,14 @@ export default function SignUp(){
             console.log(data);
         } catch (error) {
             console.error('Error sign up user:', error);
-            window.location.reload();
+            // window.location.reload();
         }
     };    
 
     return (
         <Box sx = {{...wrapper}}>
             <Box sx = {{...container}}>
-                <Box sx = {{...sign_up}}> Sign up </Box>
+                <Box sx = {{...sign_up}}> Login </Box>
                 
                 <Box sx = {{...email_password}}> Email </Box>
                 <TextField 
@@ -233,14 +233,10 @@ export default function SignUp(){
                 >
                 </TextField>
 
-                <Center> 
-                    <Box sx = {{...term_line_1}}> By clicking Sign up, you agree to </Box> 
-                </Center>
+        
 
                 <Center>
-                    <Box sx = {{...term_line_2}}>
-                        VanityBlock's <Link href = 'localhost:3000' sx = {{...link_term}}>Terms and Conditions</Link>
-                    </Box>
+                    
                 </Center>
 
                 {/*
@@ -250,16 +246,12 @@ export default function SignUp(){
                     </Button>
                 </ThemeProvider>
                 */}
+                <br></br>
+                <br></br>
+                <br></br>
 
                 <button onClick = {handleSubmit}><img src="/images/sign-up-button.png"></img></button>
 
-                
-                <Box>
-                    Already have an account? 
-                    <Button href = "/login">
-                        Login
-                    </Button>
-                </Box>
                
 
             </Box>
