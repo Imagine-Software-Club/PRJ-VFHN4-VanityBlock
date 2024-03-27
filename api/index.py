@@ -13,15 +13,20 @@ from fastapi import status, Response, Request
 from fastapi.responses import JSONResponse
 import requests
 
+from socketio import AsyncServer
+
+
 from pydantic import BaseModel
 from typing import List
 import logging
 
 
-from fastapi.responses import JSONResponse
-
 app = FastAPI()
 cred = credentials.Certificate('./api/credentials.json')
+
+sio = AsyncServer(
+    async_mode='asgi'
+)
 
 firebase_admin.initialize_app(cred)
 
@@ -240,3 +245,8 @@ async def login(response: Response, user_credentials: LoginSchema):
             detail="Invalid email or password"
         )
 
+@sio.event
+async def join_room(sid, data):
+    room = data["liscencePlate"]
+    await sio.enter_room(sid, room)
+    print(f"Client {sid} joined room: {room}")

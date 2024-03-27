@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
 import Image from "next/image";
 import shareButton from "@/public/images/share-button.png";
+import io from "socket.io-client";
 import InfoButton from "@/src/components/InfoButton";
 import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
@@ -31,6 +32,8 @@ export default function ListingPage() {
         const data = await response.json();
         console.log(data);
         setListingData(data);
+        const socket = io("http://localhost:8000");
+        socket.emit("join_room", {"licensePlate": data.plateNumber});
 
         const endTime = new Date(data.endTime).getTime();
         const calculateTimeLeft = () => {

@@ -1,6 +1,7 @@
 'use client';
 
 import React from "react";
+import io from "socket.io-client";
 import {useState} from 'react';
 import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
@@ -10,6 +11,9 @@ import InfoButton from "@/src/components/InfoButton";
 import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
+
+
+
 
 async function getData() {
   const {listingId} = useParams();
@@ -45,11 +49,14 @@ export default function Page() {
     setZip(jsonRes.data["Zip"]);
     setStateAbbr(jsonRes.data["StateAbbr"]);
     setCity(jsonRes.data["City"]);
-    // var photos = [];
-    // for (var i = 0; jsonRes.data["Picture"].length; i++) {
-    //   setPhotos([...photos, jsonRes.data["Picture"][i]]);
-    // }
+
+    const socket = io("http://localhost:8000");
+    socket.emit("join_room", {"licensePlate":licensePlate});
+
+    
   });
+
+  
 return(
   <div className="container">
       <div className="listing-info">
