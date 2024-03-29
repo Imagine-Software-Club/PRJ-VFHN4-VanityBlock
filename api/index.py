@@ -194,20 +194,24 @@ def create_data(bid: Bid):
 
 
 @sio.event
-async def connect(sid, environ):
-    sio.emit('message', "message");
-    print(f'Client {sid} connectedsdcccccccccccccccccccccccqswcfeqvaaafvdqqdqedacfdavvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvqfeeeeeeeeeeeeeeeeeeeeeedsvcfevevqdcfeqvcdefqvcdeqfvcde')
-
-@sio.event
 async def join_room(sid, data):
-    sio.emit('message', "message");
+    
     room = data["listingID"]
     await sio.enter_room(sid, room)
-    print(f"Client {sid} joined room: {room}")
 
 @sio.event
-async def disconnect(sid):
-    print(f'Client {sid} disconnected')
+async def leave_room(sid, data):
+    
+    room = data["listingID"]
+    await sio.leave_room(sid, room)
+    
+@sio.event
+async def bid_placed(sid, data):
+    
+    room = data["listingID"]
+    await sio.emit('update_bid', {'price': 555}, room=room)
+    
+
 
 
 ##-------------

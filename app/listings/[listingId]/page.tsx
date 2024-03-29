@@ -4,17 +4,18 @@ import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
 import Image from "next/image";
 import shareButton from "@/public/images/share-button.png";
-import io from "socket.io-client";
 import InfoButton from "@/src/components/InfoButton";
 import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
 import BiddingBox from "@/src/components/BiddingBox";
 import { debug } from "console";
+import { socket } from "../../socket";
 
 export default function ListingPage() {
-  const [listingData, setListingData] = useState(null);
+  const [listingData, setListingData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [bidUpdated, setBidUpdated] = useState(false);
   const [error, setError] = useState(null);
   const [timer, setTimer] = useState(0);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
@@ -60,26 +61,34 @@ export default function ListingPage() {
         setError(error.message);
       } finally {
         setLoading(false);
+        setBidUpdated(false);
       }
     };
 
     fetchData();
-  }, [listingId]);
+  }, [listingId,bidUpdated, bidUpdated]);
+
+  const sendBidSocket = () =>{
+    socket.emit("bid_placed", {listingID:listingId});
+    console.log("button pressed");
+  }
 
   useEffect(() => {
 
-    console.log("reg");
-    const socket = io("http://localhost:8000/");
-    socket.emit("join_room", {"listingID": listingId});
-    console.log(socket);
+    socket.emit("join_room",{listingID:listingId});
 
-    // Listen for incoming messages
-    socket.on('message', (message) => {
-      console.log("whats good mate");
-    });
+    function updateBid(data) {
+      setBidUpdated(true);
+    }
 
-    // Clean up the socket connection on unmount
     
+
+    socket.on("update_bid", updateBid);
+
+    return () => {
+      socket.emit("leave_room", { listingID: listingId });
+      socket.off("update_bid", updateBid);
+    };
   }, []);
 
   const formatTime = (seconds) => {
@@ -165,7 +174,7 @@ export default function ListingPage() {
         </div>
       </div>
 
-      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]} />}
+      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]}  socketBidPlaced={sendBidSocket}/>}
 
       <div className="information-box">
       <center><b><h1>Additional Information</h1></b></center>
