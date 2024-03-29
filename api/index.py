@@ -13,25 +13,18 @@ from fastapi import status, Response, Request
 from fastapi.responses import JSONResponse
 import requests
 
-from socketio import AsyncServer
+
 
 
 from pydantic import BaseModel
 from typing import List
 import logging
 
+from socketio import AsyncServer, ASGIApp
+
+
 
 app = FastAPI()
-cred = credentials.Certificate('./api/credentials.json')
-
-sio = AsyncServer(
-    async_mode='asgi'
-)
-
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # Allows only specified origin
@@ -39,6 +32,20 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
+cred = credentials.Certificate('./api/credentials.json')
+
+sio = AsyncServer(async_mode='asgi', cors_allowed_origins=["http://localhost:3000"])
+
+socket_app = ASGIApp(sio, app)
+
+
+
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+
 
 user_id = 0
 
@@ -185,6 +192,24 @@ def create_data(bid: Bid):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@sio.event
+async def connect(sid, environ):
+    sio.emit('message', "message");
+    print(f'Client {sid} connectedsdcccccccccccccccccccccccqswcfeqvaaafvdqqdqedacfdavvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvqfeeeeeeeeeeeeeeeeeeeeeedsvcfevevqdcfeqvcdefqvcdeqfvcde')
+
+@sio.event
+async def join_room(sid, data):
+    sio.emit('message', "message");
+    room = data["listingID"]
+    await sio.enter_room(sid, room)
+    print(f"Client {sid} joined room: {room}")
+
+@sio.event
+async def disconnect(sid):
+    print(f'Client {sid} disconnected')
+
+
 ##-------------
 #Authentication
 ##-------------   
@@ -245,8 +270,3 @@ async def login(response: Response, user_credentials: LoginSchema):
             detail="Invalid email or password"
         )
 
-@sio.event
-async def join_room(sid, data):
-    room = data["liscencePlate"]
-    await sio.enter_room(sid, room)
-    print(f"Client {sid} joined room: {room}")

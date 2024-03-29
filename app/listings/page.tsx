@@ -1,7 +1,6 @@
 'use client';
 
 import React from "react";
-import io from "socket.io-client";
 import {useState} from 'react';
 import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
@@ -50,8 +49,7 @@ export default function Page() {
     setStateAbbr(jsonRes.data["StateAbbr"]);
     setCity(jsonRes.data["City"]);
 
-    const socket = io("http://localhost:8000");
-    socket.emit("join_room", {"licensePlate":licensePlate});
+
 
     
   });

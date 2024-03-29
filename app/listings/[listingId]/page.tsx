@@ -10,6 +10,7 @@ import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
 import BiddingBox from "@/src/components/BiddingBox";
+import { debug } from "console";
 
 export default function ListingPage() {
   const [listingData, setListingData] = useState(null);
@@ -20,6 +21,8 @@ export default function ListingPage() {
   const [showBiddingBox, setShowBiddingBox] = useState(false); // State to control the visibility of BiddingBox
 
   const { listingId } = useParams();
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,8 +35,7 @@ export default function ListingPage() {
         const data = await response.json();
         console.log(data);
         setListingData(data);
-        const socket = io("http://localhost:8000");
-        socket.emit("join_room", {"licensePlate": data.plateNumber});
+        
 
         const endTime = new Date(data.endTime).getTime();
         const calculateTimeLeft = () => {
@@ -63,6 +65,22 @@ export default function ListingPage() {
 
     fetchData();
   }, [listingId]);
+
+  useEffect(() => {
+
+    console.log("reg");
+    const socket = io("http://localhost:8000/");
+    socket.emit("join_room", {"listingID": listingId});
+    console.log(socket);
+
+    // Listen for incoming messages
+    socket.on('message', (message) => {
+      console.log("whats good mate");
+    });
+
+    // Clean up the socket connection on unmount
+    
+  }, []);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
