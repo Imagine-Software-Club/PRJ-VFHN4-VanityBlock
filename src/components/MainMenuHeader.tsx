@@ -8,6 +8,7 @@ import {
     Select,
     TextField,
     SelectChangeEvent,
+    MenuItem,
 } from "@mui/material";
 
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
@@ -15,16 +16,21 @@ import SearchIcon from '@mui/icons-material/Search';
 import { BorderColor } from "@mui/icons-material";
 
 export default function MainMenuHeader( {onSearch} ) {
-    const [age, setAge] = useState('Past');
     const [searchInput, setSearchInput] = useState('');
-
+    const [state,setState] = useState('');
     const handleChange = (e) => {
         //Updates search value
         setSearchInput(e.target.value);
     };
     
+    const handleStateChange = (newValue) => {
+      setState(newValue);
+    }
+
     const onEnter = async () => {
-      onSearch(searchInput);
+      console.log("ENTER TEST");
+      console.log(state);
+      onSearch(searchInput,state);
     };
     
 
@@ -113,8 +119,8 @@ export default function MainMenuHeader( {onSearch} ) {
                 <FormControl fullWidth>
                     <Select
                         autoWidth
-                        defaultValue={"State"}
-                        onChange={handleChange}
+                        value={state}
+                        onChange={(e) => handleStateChange(e.target.value)}
                         sx={{
                           color: "#1c1c1d",
                           '.MuiOutlinedInput-notchedOutline': {
@@ -131,16 +137,16 @@ export default function MainMenuHeader( {onSearch} ) {
                           }
                         }}
                     >
-                        <option value={"State"} disabled>State</option>
-                        <option value={"New York"}>New York</option>
-                        <option value={"California"}>California</option>
-                        {/* Add more states as needed */}
+                      <MenuItem value="All">All</MenuItem>
+                      <MenuItem value="Michigan">Michigan</MenuItem>
+                      <MenuItem value="New York">New York</MenuItem>
                     </Select>
                 </FormControl>
             </Grid>
 
             <Grid md={1.5} sm={2} xs={12}>
                 <FormControl fullWidth>
+                  
                     <Select
                         autoWidth
                         defaultValue={"Ending Soon"}

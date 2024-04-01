@@ -38,28 +38,28 @@ app.add_middleware(
 user_id = 0
 
 @app.get("/listings/filtered")
-def filtered_search(query: Optional[str] = None):
+def filtered_search(query: Optional[str] = None,state: Optional[str] = "All"):
     logging.info(f"Query parameter received: {query}")
     
     
-    filtered_listings = fetch_listings_by_query(query)
+    filtered_listings = fetch_listings_by_query(query,state)
     
     return {"Listings":filtered_listings}
  
 
-def fetch_listings_by_query(query: str):
+def fetch_listings_by_query(query: str,state: str):
     result = []
 
     user = db.collection('Listings')
     docs = user.stream()
-    
     for doc in docs:
         if doc.exists:
             this_event = doc.to_dict()
+            print(this_event["stateIssued"])
             if query is None:
                 this_event["id"] = doc.id
                 result.append(this_event)
-            elif query in this_event["title"]:
+            elif query in this_event["title"] and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
                 this_event["id"] = doc.id
                 result.append(this_event)
                 
