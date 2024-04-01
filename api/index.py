@@ -194,20 +194,40 @@ class SignUpSchema(BaseModel):
                 "email":"sample@gmail.com",
                 "password":"samplepassword",
             }
-        }     
+        }
 
+
+class User(BaseModel):
+    BidHistory : list[str] = []
+    Bio : str = None
+    Comments: list[str] = []
+    Email : str = None
+    FirstName : str = None
+    JoinDate : datetime = None
+    LastName : str = None
+    Listings : list[str] = []
+    Picture : str = None
+    Zip : int = None
+    bids: list[str] = []
+    listings: list[str] = []
+    username: str = None
+    
 @app.post("/sign-up")
-def create_an_account(user_data: SignUpSchema):
+async def create_an_account(user_data: SignUpSchema):
     email = user_data.email
     password = user_data.password
-    # id = user_data.id
 
     try:
         user = auth.create_user(
             email = email,
             password = password
         )
-        return JSONResponse(content = {"message" : f"User account created sucessfully for user {id} "},
+
+        doc_ref = db.collection('User').document(user.uid)
+        user_initial = User(Email = email)
+        doc_ref.set(user_initial.model_dump())
+        
+        return JSONResponse(content = {"message" : f"User account created sucessfully for user {123}"},
                             status_code = 201
                )
     
@@ -231,7 +251,6 @@ async def login(response: Response, user_credentials: LoginSchema):
         token = auth.create_custom_token(user.uid)
         
         response.set_cookie(key="uid", value= user.uid)
-
         
         return {"token": token}
     except:
