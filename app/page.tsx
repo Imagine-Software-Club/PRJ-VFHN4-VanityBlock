@@ -15,10 +15,10 @@ async function getAllListings() {
   return res.json();
 }
 
-async function FilterListings(searchInput) {
+async function FilterListings(searchInput,state) {
   
-
-    const res = await fetch(`http://localhost:8000/listings/filtered?query=${encodeURIComponent(searchInput)}`);
+    console.log(state);
+    const res = await fetch(`http://localhost:8000/listings/filtered?query=${encodeURIComponent(searchInput)}&state=${encodeURIComponent(state)}`);
     if (!res.ok) {
       throw new Error("Failed to fetch filtered data");
     }
@@ -35,10 +35,12 @@ const Homepage = () => {
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
 
   const [searchVal,setSearchVal]  = useState("");
-
-  const onSearch = async (searchInput) => {
+  const [stateVal,setStateVal]    = useState("All");
+  const onSearch = async (searchInput,state) => {
     setIsSearchTriggered(true);
     setSearchVal(searchInput);
+    setStateVal(state);
+
     console.log(searchVal);
 
   };
@@ -51,7 +53,7 @@ const Homepage = () => {
         console.log(upcomingData);
         setAllListings(upcomingData["Listings"]);
       } else {
-        const upcomingData = await FilterListings(searchVal);
+        const upcomingData = await FilterListings(searchVal,stateVal);
         console.log(upcomingData);
 
         setAllListings(upcomingData["Listings"]);
@@ -59,7 +61,7 @@ const Homepage = () => {
 
     };
     fetchData();
-  }, [isSearchTriggered,searchVal]);
+  }, [isSearchTriggered,searchVal,stateVal]);
 
   return (
     <center>
