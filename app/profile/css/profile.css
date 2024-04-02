@@ -1,0 +1,98 @@
+.container {
+    display: flex;
+    height: 100vh;
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.75rem; /* 28px */
+}
+
+.side-bar {
+    width: 20%;
+    display: flex;
+    padding-top: 1.5%;
+    padding-left: 3%;
+    flex-direction: column;
+    row-gap: 3rem;
+    p {
+        position: fixed;
+    }
+}
+
+.main-content {
+    width: 80%;
+}
+
+.profile-info {
+    height: 40%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 5%;
+}
+
+.left-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio : 1 / 1;
+    height: 90%;
+    font-weight: bold;
+}
+
+.profile-pic {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.right-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right: 5%;
+}
+
+.username-edit-button {
+    width: 100%;
+    font-weight: bold;
+    font-size: 2rem;
+    position: relative;
+}
+
+.bio {
+    width: 100%;
+}
+
+.username {
+    float: left;
+    justify-content: end;
+    position: absolute; 
+    bottom: 0;
+}
+
+.edit-profile {
+    float: right;
+    aspect-ratio: 3 / 1;
+    width: 20%;
+
+}
+
+.auction-history {
+    padding-top: 5%;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.bio-modal {
+    position: absolute;
+    top: 25%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 25%;
+    box-shadow: 24;
+    border: none;
+    background-color: white;
+}

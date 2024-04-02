@@ -88,6 +88,12 @@ def get_all_listing():
     
     return {"Listings": result}
 
+@app.get("/profile")
+def get_user():
+    user = db.collection('User').document('98NBZNOEtHOX3Vs9neNUEQWOUDI2')
+    doc = user.get()
+    return doc.to_dict()
+
 @app.get("/listings/{listingId}")
 def get_listing(listingId):
     
