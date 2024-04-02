@@ -38,28 +38,28 @@ app.add_middleware(
 user_id = 0
 
 @app.get("/listings/filtered")
-def filtered_search(query: Optional[str] = None):
+def filtered_search(query: Optional[str] = None,state: Optional[str] = "All"):
     logging.info(f"Query parameter received: {query}")
     
     
-    filtered_listings = fetch_listings_by_query(query)
+    filtered_listings = fetch_listings_by_query(query,state)
     
     return {"Listings":filtered_listings}
  
 
-def fetch_listings_by_query(query: str):
+def fetch_listings_by_query(query: str,state: str):
     result = []
 
     user = db.collection('Listings')
     docs = user.stream()
-    
     for doc in docs:
         if doc.exists:
             this_event = doc.to_dict()
+            print(this_event["stateIssued"])
             if query is None:
                 this_event["id"] = doc.id
                 result.append(this_event)
-            elif query in this_event["title"]:
+            elif query in this_event["title"] and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
                 this_event["id"] = doc.id
                 result.append(this_event)
                 
@@ -194,20 +194,40 @@ class SignUpSchema(BaseModel):
                 "email":"sample@gmail.com",
                 "password":"samplepassword",
             }
-        }     
+        }
 
+class User(BaseModel):
+    BidHistory : list[str] = []
+    Bio : str = ""
+    Comments: list[str] = []
+    Email : str = ""
+    FirstName : str = ""
+    JoinDate : datetime = ""
+    LastName : str = ""
+    Listings : list[str] = []
+    Picture : str = ""
+    Zip : str = ""
+    bids: list[str] = []
+    listings: list[str] = []
+    username: str = ""
+    Email: str
+    Password: str
+    
 @app.post("/sign-up")
-def create_an_account(user_data: SignUpSchema):
-    email = user_data.email
-    password = user_data.password
-    # id = user_data.id
+async def create_an_account(user_data: User):
+    email = user_data.Email
+    password = user_data.Password
 
     try:
         user = auth.create_user(
             email = email,
             password = password
         )
-        return JSONResponse(content = {"message" : f"User account created sucessfully for user {id} "},
+
+        doc_ref = db.collection('User').document(user.uid)
+        doc_ref.set(user_data.model_dump())
+        
+        return JSONResponse(content = {"message" : f"User account created sucessfully for user {123}"},
                             status_code = 201
                )
     
@@ -231,7 +251,6 @@ async def login(response: Response, user_credentials: LoginSchema):
         token = auth.create_custom_token(user.uid)
         
         response.set_cookie(key="uid", value= user.uid)
-
         
         return {"token": token}
     except:

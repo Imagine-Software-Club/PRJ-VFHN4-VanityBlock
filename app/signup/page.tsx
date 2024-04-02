@@ -15,6 +15,7 @@ import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Container, Typography } from '@mui/material';
 
 const wrapper = {
     display: 'flex',
@@ -154,9 +155,14 @@ export default function SignUp(){
     };
     
     const [signUp, setSignUp] = useState({
-        email: "",
-        password: "",
-    })
+        Email: "",
+        Password: "",
+        FirstName: "",
+        LastName: "",
+        Bio: "",
+        Zip: "",
+        username: ""
+    });
 
     const HandleChange = (e) => {
         const {name, value} = e.target;
@@ -171,6 +177,11 @@ export default function SignUp(){
         console.log(signUp);
 
         try {
+            if (!signUp.Email || !signUp.Password) {
+                console.error('Email and Password are required fields.');
+                return;
+            }
+
             const response = await fetch('http://localhost:8000/sign-up', {
                 method: 'POST',
                 headers: {
@@ -187,82 +198,120 @@ export default function SignUp(){
             console.log(data);
         } catch (error) {
             console.error('Error sign up user:', error);
-            window.location.reload();
+            // window.location.reload();
         }
     };    
 
     return (
-        <Box sx = {{...wrapper}}>
-            <Box sx = {{...container}}>
-                <Box sx = {{...sign_up}}> Sign up </Box>
-                
-                <Box sx = {{...email_password}}> Email </Box>
+        <Box sx={{...wrapper}}>
+            <Box sx={{...container}}>
+                <Box sx={{...sign_up}}>Sign up</Box>
+    
+                <Box sx={{...email_password}}>Email</Box>
                 <TextField 
-                    name="email"
-                    sx = {{...textfield}}
-                    size = "small"
+                    name="Email"
+                    sx={{...textfield}}
+                    size="small"
                     fullWidth
                     required
-                    onChange = {HandleChange}
-                >
-                
-                </TextField>
-                
-                <Box sx = {{...email_password}}> Password </Box>
+                    onChange={HandleChange}
+                />
+    
+                <Box sx={{...email_password}}>Password</Box>
                 <TextField
-                    sx = {{...textfield}}
-                    name="password"
+                    sx={{...textfield}}
+                    name="Password"
                     type={showPassword ? "text" : "password"}
-                    size = "small"
+                    size="small"
                     fullWidth
                     required
                     InputProps={{
-                        endAdornment :
+                        endAdornment:
                             <InputAdornment position="end">
                                 <IconButton
                                     aria-label="toggle password visibility"
                                     onClick={handleClickShowPassword}
                                     onMouseDown={handleMouseDownPassword}
                                     edge="end"
-                                    >
+                                >
                                     {showPassword ? <VisibilityOff /> : <Visibility />}
                                 </IconButton>
                             </InputAdornment>
                     }}
-                    onChange = {HandleChange}
-                >
-                </TextField>
-
+                    onChange={HandleChange}
+                />
+    
+                <Box sx={{...email_password}}>First Name</Box>
+                <TextField
+                    name="FirstName"
+                    sx={{...textfield}}
+                    size="small"
+                    fullWidth
+                    onChange={HandleChange}
+                />
+    
+                <Box sx={{...email_password}}>Last Name</Box>
+                <TextField
+                    name="LastName"
+                    sx={{...textfield}}
+                    size="small"
+                    fullWidth
+                    onChange={HandleChange}
+                />
+    
+                <Box sx={{...email_password}}>Bio</Box>
+                <TextField
+                    name="Bio"
+                    sx={{...textfield}}
+                    size="small"
+                    fullWidth
+                    multiline
+                    rows={4}
+                    onChange={HandleChange}
+                />
+    
+                <Box sx={{...email_password}}>Zip</Box>
+                <TextField
+                    name="Zip"
+                    sx={{...textfield}}
+                    size="small"
+                    fullWidth
+                    onChange={HandleChange}
+                />
+    
+                <Box sx={{...email_password}}>Username</Box>
+                <TextField
+                    name="username"
+                    sx={{...textfield}}
+                    size="small"
+                    fullWidth
+                    onChange={HandleChange}
+                />
+    
                 <Center> 
-                    <Box sx = {{...term_line_1}}> By clicking Sign up, you agree to </Box> 
+                    <Box sx={{...term_line_1}}>By clicking Sign up, you agree to</Box> 
                 </Center>
-
+    
                 <Center>
-                    <Box sx = {{...term_line_2}}>
-                        VanityBlock's <Link href = 'localhost:3000' sx = {{...link_term}}>Terms and Conditions</Link>
+                    <Box sx={{...term_line_2}}>
+                        VanityBlock's <Link href='localhost:3000' sx={{...link_term}}>Terms and Conditions</Link>
                     </Box>
                 </Center>
-
-                {/*
-                <ThemeProvider theme = {theme}>
-                    <Button color = "primary" variant = "contained" fullWidth>
+    
+                <Center>
+                    <Button variant="contained" onClick={handleSubmit} sx={{ mt: 2, backgroundColor: '#222E61' }}>
                         Sign up
                     </Button>
-                </ThemeProvider>
-                */}
-
-                <button onClick = {handleSubmit}><img src="/images/sign-up-button.png"></img></button>
-
-                
-                <Box>
+                </Center>
+    
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
                     Already have an account? 
-                    <Button href = "/login">
+                    <Link href="/login" sx={{ color: '#222E61', ml: 1 }}>
                         Login
-                    </Button>
+                    </Link>
                 </Box>
-               
-
             </Box>
         </Box>
     );
+    
 }
