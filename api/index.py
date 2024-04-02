@@ -196,26 +196,27 @@ class SignUpSchema(BaseModel):
             }
         }
 
-
 class User(BaseModel):
     BidHistory : list[str] = []
-    Bio : str = None
+    Bio : str = ""
     Comments: list[str] = []
-    Email : str = None
-    FirstName : str = None
-    JoinDate : datetime = None
-    LastName : str = None
+    Email : str = ""
+    FirstName : str = ""
+    JoinDate : datetime = ""
+    LastName : str = ""
     Listings : list[str] = []
-    Picture : str = None
-    Zip : int = None
+    Picture : str = ""
+    Zip : str = ""
     bids: list[str] = []
     listings: list[str] = []
-    username: str = None
+    username: str = ""
+    Email: str
+    Password: str
     
 @app.post("/sign-up")
-async def create_an_account(user_data: SignUpSchema):
-    email = user_data.email
-    password = user_data.password
+async def create_an_account(user_data: User):
+    email = user_data.Email
+    password = user_data.Password
 
     try:
         user = auth.create_user(
@@ -224,8 +225,7 @@ async def create_an_account(user_data: SignUpSchema):
         )
 
         doc_ref = db.collection('User').document(user.uid)
-        user_initial = User(Email = email)
-        doc_ref.set(user_initial.model_dump())
+        doc_ref.set(user_data.model_dump())
         
         return JSONResponse(content = {"message" : f"User account created sucessfully for user {123}"},
                             status_code = 201

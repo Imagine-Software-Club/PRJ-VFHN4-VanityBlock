@@ -9,6 +9,8 @@ import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
 import BiddingBox from "@/src/components/BiddingBox";
+import CurrentBid from "@/src/components/CurrentBid";
+import { Container } from "postcss";
 
 export default function ListingPage() {
   const [listingData, setListingData] = useState(null);
@@ -141,10 +143,20 @@ export default function ListingPage() {
               </div>
             ))}
           </div>
+          
         </div>
+        
+        
+
       </div>
 
       {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]} />}
+
+
+      
+    
+      <CurrentBid/>
+
 
       <div className="information-box">
       <center><b><h1>Additional Information</h1></b></center>
@@ -169,5 +181,7 @@ export default function ListingPage() {
     <br></br>
       </div>
     </div>
+
+    
   );
 }

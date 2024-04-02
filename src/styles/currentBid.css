@@ -1,0 +1,50 @@
+.current-bid-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+    height: 100px; /* Adjust height as needed */
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.left-half {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 50%;
+}
+
+.right-half {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    width: 50%;
+}
+
+.link {
+    color: rgb(146, 146, 201);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 100%;
+}
+
+.big-number {
+    font-size: 300%;
+    font-weight: bold;
+}
+
+.small-number {
+    font-size: 14px;
+}
+
+.time {
+    font-size: 14px;
+}
+
+.contact-info {
+    font-size: 14px;
+}
