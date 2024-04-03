@@ -18,15 +18,17 @@
     background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.information-box h3 {
+  }
+  
+  .information-box h3 {
     color: rgb(110, 110, 255);
     font-size: 105%;
-}
-.information-box p {
+  }
+  
+  .information-box p {
     margin-left: 2%;
-}
+  }
+  
 
 
 .listing-info {

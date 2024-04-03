@@ -168,11 +168,6 @@ export default function ListingPage() {
       {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]} />}
 
 
-      
-    
-      <CurrentBid/>
-
-
       <div className="information-box">
       <center><b><h1>Additional Information</h1></b></center>
     <br></br>
@@ -195,6 +190,21 @@ export default function ListingPage() {
     <p>{listingData.accentColor}</p>
     <br></br>
       </div>
+
+      <center>
+      <CurrentBid
+      currentBidder="Username1234"
+      currentBid={1225}
+      seller="OtherUsername5678"
+      location="Fremont MI, 49412"
+      endingTime="Wed, Jan 9 5:30 PM EST"
+      bidsCount={21}
+    />
+    </center>
+
+    <br></br>
+    <br></br>
+
     </div>
 
     

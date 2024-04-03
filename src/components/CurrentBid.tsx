@@ -1,21 +1,61 @@
-import * as React from 'react';
-import { PropaneSharp } from '@mui/icons-material';
-import '@/src/styles/currentBid.css'
+import React from 'react';
+import '@/src/styles/currentBid.css';
 
-export default function CurrentBid(props: any) {
-    return (
-        <div className="current-bid-container">
-            <div className="left-half">
-                <center>
-                <a href="#" className="link">Current Bidder: Name of Bidder</a>
-                <div className="big-number">100</div>
-                </center>
-            </div>
-            <div className="right-half">
-                <div className="small-number">10</div>
-                <div className="time">10:00 AM</div>
-                <div className="contact-info">Contact Info: Available to listing's user following auction</div>
-            </div>
+const CurrentBid = ({
+  currentBidder,
+  currentBid,
+  seller,
+  location,
+  endingTime,
+  bidsCount,
+}) => {
+  return (
+    <div className="current-bid-container">
+        <br></br>
+      <div className="left-half">
+        <div className="current-bidder">
+          Current Bid&nbsp;
+          <span role="img" aria-label="globe">
+            🌐
+          </span>
+          &nbsp;{currentBidder}
         </div>
-    );
-}
+        <div className="big-number">${currentBid}</div>
+      </div>
+      <div className="right-half">
+        
+        <div className="seller">
+          Time of Bid:&nbsp;
+          <span role="img" aria-label="clock">
+            ⌚
+          </span>
+          &nbsp;{endingTime}
+        </div>
+        <div className="seller">
+          Ending&nbsp;
+          <span role="img" aria-label="clock">
+            ⌚
+          </span>
+          &nbsp;{endingTime}
+        </div>
+
+        <div className="seller">
+          Contact -
+          
+          Available to seller after auction completion
+        </div>
+
+        <div className="seller">
+          Bids&nbsp;
+          <span role="img" aria-label="hash">
+            #
+          </span>
+          &nbsp;{bidsCount}
+        </div>
+    
+      </div>
+    </div>
+  );
+};
+
+export default CurrentBid;

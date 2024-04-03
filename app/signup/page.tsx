@@ -195,10 +195,11 @@ export default function SignUp(){
             }
     
             const data = await response.json();
+
+            window.location.reload();
             console.log(data);
         } catch (error) {
             console.error('Error sign up user:', error);
-            // window.location.reload();
         }
     };    
 
