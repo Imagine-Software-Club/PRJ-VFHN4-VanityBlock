@@ -16,7 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import { signInWithEmailAndPassword, getAuth, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {auth} from "@/app/layout";
 
 const wrapper = {
@@ -213,6 +213,15 @@ export default function Login(){
         }
       });
 
+      const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+            console.log('User signed out');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
+
     return (
         <Box sx = {{...wrapper}}>
             <Box sx = {{...container}}>
@@ -273,6 +282,8 @@ export default function Login(){
                 <br></br>
 
                 <button onClick = {handleSubmit}><img src="/images/login-button.png"></img></button>
+
+                <Button onClick={handleSignOut}>Sign Out</Button>
 
                
 

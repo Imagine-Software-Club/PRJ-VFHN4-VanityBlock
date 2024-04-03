@@ -4,6 +4,11 @@ import React from "react";
 import './css/create.css';
 import { TextField } from '@mui/material'
 import { useState }  from "react"
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {auth} from "@/app/layout";
+
+
 export default function Create() {
     
     const [formData, setFormData] = useState({
@@ -33,36 +38,47 @@ export default function Create() {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission behavior
-
-        console.log(formData);
-
-        // API stuff goes here
+    
         try {
-            const response = await fetch('http://localhost:8000/listings', {  // Adjust the URL/port as needed
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    try {
+                        const token = await user.getIdToken();
+
+                        formData["uid"] = await user.uid;
+
+                        const response = await fetch('http://localhost:8000/listings', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ${token}'
+                            },
+                            body: JSON.stringify(formData),
+                        });
+    
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+    
+                        const data = await response.json();
+                        console.log(data);
+                        // Handle success response
+                    } catch (error) {
+                        console.error('Error posting listing:', error);
+                        // Handle error
+                    }
+                } else {
+                    console.log('No user is signed in.');
+                }
             });
-    
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-    
-            const data = await response.json();
-            console.log(data);
-            // Handle success response
         } catch (error) {
-            console.error('Error posting listing:', error);
+            console.error('Error getting user:', error);
             // Handle error
         }
-
-        window.location.reload();
-
-
+    
+        // window.location.reload();
     };
-
+    
     return(
         <div className="wrapper">
             <div className="container">

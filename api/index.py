@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Response, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -16,6 +18,8 @@ import requests
 from pydantic import BaseModel
 from typing import List
 import logging
+
+
 
 
 from fastapi.responses import JSONResponse
@@ -36,6 +40,10 @@ app.add_middleware(
 )
 
 user_id = 0
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 @app.get("/listings/filtered")
 def filtered_search(query: Optional[str] = None,state: Optional[str] = "All"):
@@ -119,38 +127,35 @@ class Listing(BaseModel):
     picture: list[str] = []
     bids: list[str] = []
     price: str = "1"
+    uid: str = ""
 
 @app.post("/listings")
-async def create_listing(listing: Listing, request: Request):
+async def create_listing(listing: Listing, request: Request, token: str = Depends(oauth2_scheme)):
     cookies = request.cookies
     uid = cookies.get("uid", "No UID Cookie")
 
-    try:
-        doc_ref = db.collection('Listings').document()
-        listing_data = listing.model_dump()
-
-        # Explicitly set price and endTime
-        listing_data["endTime"] = datetime.now() + timedelta(days=7)
-        listing_data["price"] = int(listing_data["price"])
-        
-        if listing_data["picture"] == []:
-            listing_data["picture"].append("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAACuCAMAAAClZfCTAAAAbFBMVEX////+/v7t7e3f399ra2v29vZwcHCKioqAgIDT09N1dXXq6upYWFh5eXlPT0/i4uLMzMyenp5jY2OSkpK4uLheXl6+vr6wsLDV1dVERETy8vLHx8c7OzuamppJSUlAQEAkJCSNjY2lpaUeHh5dF9R2AAAET0lEQVR4nO3dbXeaMBjG8TtCEEGU4hPWqtN9/++4BNfuVBOvnKPDbFy/07MXCG34Nzx0byJCRERERERERDR0apBeXZ2IPn1ekno0UNpG6L68heyXXlfpYFVr/TuDJ5HNt5m+JfpvTNF/gU7eVpvfIZzsFMoWpk/ZTgapLU2lfab9V5q5Ec12IrumyMeDlBfN2pz/7N5LUroT3ZzKR+frv6s8NdrMEf80Wi5EHSbddOpzXLHoTntyUHJaevf5UJLWw30bv5x4nYr68Hwsu4VMijsvBV/7Oo72Pydf5GpI6vIPHKQ5ppjIYufa02zKE2lKfK6OHFFOu9tBBfwizQ5lI0nlfH9UstXyQwKuMucO0TVyDxKfmzIR9NZZSMlMvachE8K8Ps2vJBE+BcvkepR3Xng+2dPP3tXMeTsRWalREfCjlewP1bX0UMZzudnJUh7Sm0HO9kGTvSjV1HUqZtM0MNFm4dg6+ojrWjuOHBsXm5BDH08k6ejmePMdF3U8jcyje+G4ZapRGnL0X0mkYkukJifXdf9YIglPtHRdaOUxoqeaGcjR9QB57EKT8ESyv70TFquAN6remPt1uSpuBtnsg4b4eCJln6c34nq/tu/Wt2MM/C0+IZHz6Jj+BlG+9+iwET7jQvvPMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQc9YQs69Ols0y8aKdwnlvpaQM0cn9bWJDlnauSfdr+t9cjPIJGCdb3lOonH2duV8mrbxLERoR9JOT+frUWZ5T2s1yvns2Kg/oplE3TQ6asf281vI0U9ZWtd1+N65Bv1rKNntXZO6t9WHm7I7Xn0j4zaatXXtdTa+rEH6Z3xW2YQc/oRE69yxMdnGsxK6PZtj4ticr0MOvp+oCvrxm+3s2jZ9j6qQ0qljkJugeV75E82UbgKmwvcJ/G0iR8U1yJCTk0arqftD2Wr5GfJ2E2GOULiQOfsfop13DbPB3HCLeZwzojfm7OeZvdm7aiqpx5KsYrrp9s+e/CqRce3LYF638uXlw2Fmsqe+zO115lNnIqulOO90wyCyXIlktb+inUN5kbje3QdBt0XezSPfRWQiphuRtkqrfJCqtDB/ImxS5b0d2w/GlfkDTM2TQZqbAKMqv/P/St3FWDd5Xb74jvAyZZ039d1Xw8t+7akosiFKs+rUdn38z/Ovj/Uwqa9p4k30lQru8Z8a7IkTERERERERERFRn34BH89n2Pmv2XoAAAAASUVORK5CYII=")
-
     
-        doc_ref.set(listing_data)
+    doc_ref = db.collection('Listings').document()
+    listing_data = listing.model_dump()
 
-        doc_ref_user = db.collection('User').document(uid)
-        doc_ref_user.update({
-            "listings": ArrayUnion([doc_ref.id]),
-        })
-        print("got here")
-        
-        return {"message": "Listing created successfully", "id": doc_ref.id}
+    # Explicitly set price and endTime
+    listing_data["endTime"] = datetime.now() + timedelta(days=7)
+    listing_data["price"] = int(listing_data["price"])
+    
+    if listing_data["picture"] == []:
+        listing_data["picture"].append("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAACuCAMAAAClZfCTAAAAbFBMVEX////+/v7t7e3f399ra2v29vZwcHCKioqAgIDT09N1dXXq6upYWFh5eXlPT0/i4uLMzMyenp5jY2OSkpK4uLheXl6+vr6wsLDV1dVERETy8vLHx8c7OzuamppJSUlAQEAkJCSNjY2lpaUeHh5dF9R2AAAET0lEQVR4nO3dbXeaMBjG8TtCEEGU4hPWqtN9/++4BNfuVBOvnKPDbFy/07MXCG34Nzx0byJCRERERERERDR0apBeXZ2IPn1ekno0UNpG6L68heyXXlfpYFVr/TuDJ5HNt5m+JfpvTNF/gU7eVpvfIZzsFMoWpk/ZTgapLU2lfab9V5q5Ec12IrumyMeDlBfN2pz/7N5LUroT3ZzKR+frv6s8NdrMEf80Wi5EHSbddOpzXLHoTntyUHJaevf5UJLWw30bv5x4nYr68Hwsu4VMijsvBV/7Oo72Pydf5GpI6vIPHKQ5ppjIYufa02zKE2lKfK6OHFFOu9tBBfwizQ5lI0nlfH9UstXyQwKuMucO0TVyDxKfmzIR9NZZSMlMvachE8K8Ps2vJBE+BcvkepR3Xng+2dPP3tXMeTsRWalREfCjlewP1bX0UMZzudnJUh7Sm0HO9kGTvSjV1HUqZtM0MNFm4dg6+ojrWjuOHBsXm5BDH08k6ejmePMdF3U8jcyje+G4ZapRGnL0X0mkYkukJifXdf9YIglPtHRdaOUxoqeaGcjR9QB57EKT8ESyv70TFquAN6remPt1uSpuBtnsg4b4eCJln6c34nq/tu/Wt2MM/C0+IZHz6Jj+BlG+9+iwET7jQvvPMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQUwEMRHERBATQc9YQs69Ols0y8aKdwnlvpaQM0cn9bWJDlnauSfdr+t9cjPIJGCdb3lOonH2duV8mrbxLERoR9JOT+frUWZ5T2s1yvns2Kg/oplE3TQ6asf281vI0U9ZWtd1+N65Bv1rKNntXZO6t9WHm7I7Xn0j4zaatXXtdTa+rEH6Z3xW2YQc/oRE69yxMdnGsxK6PZtj4ticr0MOvp+oCvrxm+3s2jZ9j6qQ0qljkJugeV75E82UbgKmwvcJ/G0iR8U1yJCTk0arqftD2Wr5GfJ2E2GOULiQOfsfop13DbPB3HCLeZwzojfm7OeZvdm7aiqpx5KsYrrp9s+e/CqRce3LYF638uXlw2Fmsqe+zO115lNnIqulOO90wyCyXIlktb+inUN5kbje3QdBt0XezSPfRWQiphuRtkqrfJCqtDB/ImxS5b0d2w/GlfkDTM2TQZqbAKMqv/P/St3FWDd5Xb74jvAyZZ039d1Xw8t+7akosiFKs+rUdn38z/Ovj/Uwqa9p4k30lQru8Z8a7IkTERERERERERFRn34BH89n2Pmv2XoAAAAASUVORK5CYII=")
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    print('here')
+    doc_ref.set(listing_data)
 
-
+    doc_ref_user = db.collection('User').document(listing_data["uid"])
+    doc_ref_user.update({
+        "listings": ArrayUnion([doc_ref.id]),
+    })
+    print("got here")
+    
+    return {"message": "Listing created successfully", "id": doc_ref.id}
+    
 class Bid(BaseModel):
     amount : float
     listing: str
