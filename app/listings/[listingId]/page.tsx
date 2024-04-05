@@ -9,8 +9,11 @@ import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
 import BiddingBox from "@/src/components/BiddingBox";
+
 import { debug } from "console";
 import { socket } from "../../socket";
+import CurrentBid from "@/src/components/CurrentBid";
+import { Container } from "postcss";
 
 export default function ListingPage() {
   const [listingData, setListingData] = useState({});
@@ -118,6 +121,21 @@ export default function ListingPage() {
     return <div>Error: {error}</div>;
   }
 
+  // import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+  // const auth = getAuth();
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) {
+  //     // User is signed in, see docs for a list of available properties
+  //     // https://firebase.google.com/docs/reference/js/auth.user
+  //     const uid = user.uid;
+  //     // ...
+  //   } else {
+  //     // User is signed out
+  //     // ...
+  //   }
+  // });
+
   return (
     <div className="container">
       <div className="listing-info">
@@ -171,10 +189,15 @@ export default function ListingPage() {
               </div>
             ))}
           </div>
+          
         </div>
+        
+        
+
       </div>
 
       {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]}  socketBidPlaced={sendBidSocket}/>}
+
 
       <div className="information-box">
       <center><b><h1>Additional Information</h1></b></center>
@@ -198,6 +221,23 @@ export default function ListingPage() {
     <p>{listingData.accentColor}</p>
     <br></br>
       </div>
+
+      <center>
+      <CurrentBid
+      currentBidder="Username1234"
+      currentBid={1225}
+      seller="OtherUsername5678"
+      location="Fremont MI, 49412"
+      endingTime="Wed, Jan 9 5:30 PM EST"
+      bidsCount={21}
+    />
+    </center>
+
+    <br></br>
+    <br></br>
+
     </div>
+
+    
   );
 }

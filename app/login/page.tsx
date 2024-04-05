@@ -16,6 +16,9 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
+import { signInWithEmailAndPassword, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {auth} from "@/app/layout";
+
 const wrapper = {
     display: 'flex',
     justifyContent: 'center',
@@ -168,7 +171,16 @@ export default function Login(){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(signUp);
+        const { email, password } = signUp;
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log(user);
+
+        } catch (error) {
+            console.error('Error logging in:', error);
+        }
 
         try {
             const response = await fetch('http://localhost:8000/login', {
@@ -184,12 +196,31 @@ export default function Login(){
             }
     
             const data = await response.json();
-            console.log(data);
+            window.location.reload();
         } catch (error) {
             console.error('Error sign up user:', error);
             // window.location.reload();
         }
     };    
+
+    const unsubscribe = onAuthStateChanged(auth, user => {
+        if (user) {
+          const uid = user.uid;
+          console.log(`User ID: ${uid}`);
+        } else {
+    
+          console.log('No user is signed in.');
+        }
+      });
+
+      const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+            console.log('User signed out');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
 
     return (
         <Box sx = {{...wrapper}}>
@@ -250,7 +281,9 @@ export default function Login(){
                 <br></br>
                 <br></br>
 
-                <button onClick = {handleSubmit}><img src="/images/sign-up-button.png"></img></button>
+                <button onClick = {handleSubmit}><img src="/images/login-button.png"></img></button>
+
+                <Button onClick={handleSignOut}>Sign Out</Button>
 
                
 
