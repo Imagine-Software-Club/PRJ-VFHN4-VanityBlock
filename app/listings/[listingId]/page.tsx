@@ -9,18 +9,24 @@ import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
 import BiddingBox from "@/src/components/BiddingBox";
+
+import { debug } from "console";
+import { socket } from "../../socket";
 import CurrentBid from "@/src/components/CurrentBid";
 import { Container } from "postcss";
 
 export default function ListingPage() {
-  const [listingData, setListingData] = useState(null);
+  const [listingData, setListingData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [bidUpdated, setBidUpdated] = useState(false);
   const [error, setError] = useState(null);
   const [timer, setTimer] = useState(0);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [showBiddingBox, setShowBiddingBox] = useState(false); // State to control the visibility of BiddingBox
 
   const { listingId } = useParams();
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +39,7 @@ export default function ListingPage() {
         const data = await response.json();
         console.log(data);
         setListingData(data);
+        
 
         const endTime = new Date(data.endTime).getTime();
         const calculateTimeLeft = () => {
@@ -57,11 +64,35 @@ export default function ListingPage() {
         setError(error.message);
       } finally {
         setLoading(false);
+        setBidUpdated(false);
       }
     };
 
     fetchData();
-  }, [listingId]);
+  }, [listingId,bidUpdated, bidUpdated]);
+
+  const sendBidSocket = () =>{
+    socket.emit("bid_placed", {listingID:listingId});
+    console.log("button pressed");
+  }
+
+  useEffect(() => {
+
+    socket.emit("join_room",{listingID:listingId});
+
+    function updateBid(data) {
+      setBidUpdated(true);
+    }
+
+    
+
+    socket.on("update_bid", updateBid);
+
+    return () => {
+      socket.emit("leave_room", { listingID: listingId });
+      socket.off("update_bid", updateBid);
+    };
+  }, []);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -165,7 +196,7 @@ export default function ListingPage() {
 
       </div>
 
-      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]} />}
+      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]}  socketBidPlaced={sendBidSocket}/>}
 
 
       <div className="information-box">

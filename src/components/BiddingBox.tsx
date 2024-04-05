@@ -66,6 +66,7 @@ export default function BiddingBox(props) {
 
     const dateISO = new Date().toISOString();
     updateDictionary("timeDate", dateISO);
+    props.socketBidPlaced();
     
   };
 

@@ -15,22 +15,16 @@ from fastapi import status, Response, Request
 from fastapi.responses import JSONResponse
 import requests
 
+
+
+
 from pydantic import BaseModel
 from typing import List
 import logging
 
-
-
-
-from fastapi.responses import JSONResponse
+from socketio import AsyncServer, ASGIApp
 
 app = FastAPI()
-cred = credentials.Certificate('./api/credentials.json')
-
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # Allows only specified origin
@@ -38,6 +32,20 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
+cred = credentials.Certificate('./api/credentials.json')
+
+sio = AsyncServer(async_mode='asgi', cors_allowed_origins=["http://localhost:3000"])
+
+socket_app = ASGIApp(sio, app)
+
+
+
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+
 
 user_id = 0
 
@@ -190,6 +198,28 @@ def create_data(bid: Bid):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@sio.event
+async def join_room(sid, data):
+    
+    room = data["listingID"]
+    await sio.enter_room(sid, room)
+
+@sio.event
+async def leave_room(sid, data):
+    
+    room = data["listingID"]
+    await sio.leave_room(sid, room)
+    
+@sio.event
+async def bid_placed(sid, data):
+    
+    room = data["listingID"]
+    await sio.emit('update_bid', {'price': 555}, room=room)
+    
+
+
 
 ##-------------
 #Authentication

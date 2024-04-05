@@ -11,6 +11,9 @@ import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
 
+
+
+
 async function getData() {
   const {listingId} = useParams();
   const res = await fetch(`http://localhost:8000/listings/${listingId}`)
@@ -45,11 +48,13 @@ export default function Page() {
     setZip(jsonRes.data["Zip"]);
     setStateAbbr(jsonRes.data["StateAbbr"]);
     setCity(jsonRes.data["City"]);
-    // var photos = [];
-    // for (var i = 0; jsonRes.data["Picture"].length; i++) {
-    //   setPhotos([...photos, jsonRes.data["Picture"][i]]);
-    // }
+
+
+
+    
   });
+
+  
 return(
   <div className="container">
       <div className="listing-info">
