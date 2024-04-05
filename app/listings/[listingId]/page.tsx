@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from 'next/navigation';
 import '@/app/listings/css/listingpage.css';
 import Image from "next/image";
@@ -27,7 +27,6 @@ export default function ListingPage() {
   const { listingId } = useParams();
 
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,21 +34,20 @@ export default function ListingPage() {
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
-
+  
         const data = await response.json();
         console.log(data);
         setListingData(data);
-        
-
+  
         const endTime = new Date(data.endTime).getTime();
         const calculateTimeLeft = () => {
           const now = Date.now();
           const timeLeft = endTime - now;
           return timeLeft / 1000;
         };
-
+  
         setTimer(calculateTimeLeft());
-
+  
         const intervalId = setInterval(() => {
           const timeLeft = calculateTimeLeft();
           if (timeLeft > 0) {
@@ -67,32 +65,41 @@ export default function ListingPage() {
         setBidUpdated(false);
       }
     };
-
+  
     fetchData();
-  }, [listingId,bidUpdated, bidUpdated]);
-
-  const sendBidSocket = () =>{
-    socket.emit("bid_placed", {listingID:listingId});
-    console.log("button pressed");
-  }
-
+  }, [listingId]);
+  
   useEffect(() => {
-
-    socket.emit("join_room",{listingID:listingId});
-
+    socket.emit("join_room", { listingID: listingId });
+  
     function updateBid(data) {
+      setListingData(prevListingData => {
+        // Assuming socket data structure matches listingData structure
+        return {
+          ...prevListingData,
+          ...data
+        };
+      });
       setBidUpdated(true);
     }
-
-    
-
+  
     socket.on("update_bid", updateBid);
-
+  
     return () => {
       socket.emit("leave_room", { listingID: listingId });
       socket.off("update_bid", updateBid);
     };
   }, []);
+
+  
+  function handleBidPrice(amount) {
+      const sendBidSocket = () =>{
+        socket.emit("bid_placed", {listingID:listingId, amount: amount});
+        console.log("button pressed");
+      }
+      sendBidSocket();
+  };
+  
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -121,21 +128,6 @@ export default function ListingPage() {
     return <div>Error: {error}</div>;
   }
 
-  // import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-  // const auth = getAuth();
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     // User is signed in, see docs for a list of available properties
-  //     // https://firebase.google.com/docs/reference/js/auth.user
-  //     const uid = user.uid;
-  //     // ...
-  //   } else {
-  //     // User is signed out
-  //     // ...
-  //   }
-  // });
-
   return (
     <div className="container">
       <div className="listing-info">
@@ -150,7 +142,7 @@ export default function ListingPage() {
               {listingData && 'location' in listingData ? (
                 <p className="location">{listingData.location}</p>
               ) : (
-                <p className="location">Location Not Found</p>
+                <p className="location"></p>
             )}
 
           </div>
@@ -196,7 +188,7 @@ export default function ListingPage() {
 
       </div>
 
-      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]}  socketBidPlaced={sendBidSocket}/>}
+      {showBiddingBox && <BiddingBox hideBox={toggleBiddingBox} listing={listingId} price={listingData.price} icon = {listingData.picture[selectedPhotoIndex]}  socketBidPlaced={handleBidPrice}/>}
 
 
       <div className="information-box">
