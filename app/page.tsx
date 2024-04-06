@@ -6,6 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import MainMenuHeader from '@/src/components/MainMenuHeader';
 import { Box } from '@mui/material';
 import { CompressOutlined } from '@mui/icons-material';
+import { socket } from "./socket";
 
 async function getAllListings() {
   const res = await fetch("http://127.0.0.1:8000/listings");
@@ -29,11 +30,11 @@ async function FilterListings(searchInput,state) {
 
 const Homepage = () => {
   
-  const [allListings, setAllListings] = useState([]);
-
+  const [allListings, setAllListings] = useState({});
   //Added
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
 
+  const [dataPulled,setDataPulled] = useState(false);
   const [searchVal,setSearchVal]  = useState("");
   const [stateVal,setStateVal]    = useState("All");
   const onSearch = async (searchInput,state) => {
@@ -44,23 +45,73 @@ const Homepage = () => {
     console.log(searchVal);
 
   };
+  
 
   useEffect(() => {
+
+    Object.keys(allListings).map((listing) => 
+        socket.emit("join_room", { listingID: allListings[listing]["id"] }
+    ));
+
+    function updateBid(data) {
+      console.log(allListings);
+      
+      setAllListings(prevDict => {
+        //updates just the price of the new bid
+        return {
+          ...prevDict,
+          [data.listingId]: {
+            ...prevDict[data.listingId],
+            ["price"]: data.price,
+          },
+        };
+
+      });
+      
+      
+    }
+  
+    socket.on("update_bid", updateBid);
+  
+    return () => {
+
+      Object.keys(allListings).map((listing) => 
+        socket.emit("leave_room", { listingID: allListings[listing]["id"] }
+      ));
+      socket.off("update_bid", updateBid);
+    };
+  }, [dataPulled]);
+
+  useEffect(() => {
+
     const fetchData = async () => {
-
+      let fetchOutput;
       if (!isSearchTriggered) {
-        const upcomingData = await getAllListings();
-        console.log(upcomingData);
-        setAllListings(upcomingData["Listings"]);
+        fetchOutput= await getAllListings();
+        console.log(fetchOutput);
+        
       } else {
-        const upcomingData = await FilterListings(searchVal,stateVal);
-        console.log(upcomingData);
-
-        setAllListings(upcomingData["Listings"]);
+        fetchOutput = await FilterListings(searchVal,stateVal);
+        console.log(fetchOutput);
+        
       }
+      return fetchOutput;
 
     };
-    fetchData();
+
+    fetchData().then((data) => {
+      let dict = {};
+      data["Listings"].forEach((row) =>{
+        dict[row["id"]] = row;
+      });
+      
+      setAllListings(dict);
+      setDataPulled(true);
+      
+      
+    });
+
+    
   }, [isSearchTriggered,searchVal,stateVal]);
 
   return (
@@ -69,21 +120,21 @@ const Homepage = () => {
         <MainMenuHeader onSearch={onSearch} />
         <br /><br />
         <Grid container spacing={4} justifyContent="center">
-          {allListings.map((listing, index) => (
+          {Object.keys(allListings).map((listing, index) => (
             // Adjust grid sizing here for responsive behavior
             <Grid key={index} item xs={12} sm={6} md={4}>
               <ListingCard
-                name={listing["plateNumber"]}
-                endTime={listing["endTime"]}
-                price={listing["price"]}
-                id={listing["id"]}
-                picture={listing["picture"] && listing["picture"][0] ? listing["picture"][0] : "defaultImageURL"}
-                description={listing["description"]}
-                flaws={listing["flaws"]}
-                mainColor={listing["mainColor"]}
-                accentColor = {listing["accentColor"]}
-                year = {listing["yearIssued"]}
-                state = {listing["stateIssued"]}
+                name={allListings[listing]["plateNumber"]}
+                endTime={allListings[listing]["endTime"]}
+                price={allListings[listing]["price"]}
+                id={allListings[listing]["id"]}
+                picture={allListings[listing]["picture"] && allListings[listing]["picture"][0] ? allListings[listing]["picture"][0] : "defaultImageURL"}
+                description={allListings[listing]["description"]}
+                flaws={allListings[listing]["flaws"]}
+                mainColor={allListings[listing]["mainColor"]}
+                accentColor = {allListings[listing]["accentColor"]}
+                year = {allListings[listing]["yearIssued"]}
+                state = {allListings[listing]["stateIssued"]}
               />
             </Grid>
           ))}

@@ -73,6 +73,7 @@ export default function ListingPage() {
     socket.emit("join_room", { listingID: listingId });
   
     function updateBid(data) {
+      console.log("bid listing page");
       setListingData(prevListingData => {
         // Assuming socket data structure matches listingData structure
         return {

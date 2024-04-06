@@ -216,7 +216,7 @@ async def leave_room(sid, data):
 async def bid_placed(sid, data):
     
     room = data["listingID"]
-    await sio.emit('update_bid', {'price': data["amount"]}, room=room)
+    await sio.emit('update_bid', {'price': data["amount"], 'listingId': data["listingID"]}, room=room)
     
 
 
