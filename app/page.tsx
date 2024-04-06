@@ -34,7 +34,6 @@ const Homepage = () => {
   //Added
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
 
-  const [dataPulled,setDataPulled] = useState(false);
   const [searchVal,setSearchVal]  = useState("");
   const [stateVal,setStateVal]    = useState("All");
   const onSearch = async (searchInput,state) => {
@@ -49,9 +48,7 @@ const Homepage = () => {
 
   useEffect(() => {
 
-    Object.keys(allListings).map((listing) => 
-        socket.emit("join_room", { listingID: allListings[listing]["id"] }
-    ));
+    
 
     function updateBid(data) {
       console.log(allListings);
@@ -80,7 +77,7 @@ const Homepage = () => {
       ));
       socket.off("update_bid", updateBid);
     };
-  }, [dataPulled]);
+  }, []);
 
   useEffect(() => {
 
@@ -106,11 +103,19 @@ const Homepage = () => {
       });
       
       setAllListings(dict);
-      setDataPulled(true);
+
+      Object.keys(dict).map((listing) => 
+        socket.emit("join_room", { listingID: dict[listing]["id"] }
+      ));
       
       
     });
+    return () => {
 
+      Object.keys(allListings).map((listing) => 
+        socket.emit("leave_room", { listingID: allListings[listing]["id"] }
+      ));
+    };
     
   }, [isSearchTriggered,searchVal,stateVal]);
 
