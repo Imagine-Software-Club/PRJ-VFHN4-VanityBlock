@@ -35,6 +35,7 @@ const Comment = ({
     const currentDate = new Date();
     const timeDiff = currentDate.getTime() - commentDate.getTime();
 
+
     const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
     const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
@@ -50,8 +51,10 @@ const Comment = ({
   return (
     <div className="single-container">
       <div className="username-container">
-        <div className="comment-username">{username}</div>
-        <div className="timestamp">{formattedTimestamp}</div>
+        <div className="comment-username">
+          <a href="/profile/{username}">User Profile</a>
+          </div>
+        {/* <div className="timestamp">{formattedTimestamp}</div> */}
       </div>
       <div className="comment-text">{text}</div>
       <div className="comment-interaction">
@@ -67,9 +70,9 @@ const Comment = ({
           <ThumbDownOffAltIcon className="dislike-off" onClick={toggleDislike} />
         )}
         &nbsp;&nbsp;
-        <span role="img" aria-label="replies" className="replies">
+        {/* <span role="img" aria-label="replies" className="replies">
           💬Reply
-        </span>
+        </span> */}
       </div>
     </div>
   );
