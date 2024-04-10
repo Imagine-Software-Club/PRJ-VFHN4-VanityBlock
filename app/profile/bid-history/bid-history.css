@@ -1,0 +1,20 @@
+.bid-history-header {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.bid-history-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5%;
+}
+
+
+.display-bids {
+    color: grey;
+    font-weight: normal;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1ch;
+}

@@ -73,10 +73,10 @@ export default function Page() {
                 <a href={`/profile/${userId}`}>
                     <p>Profile</p>
                 </a>
-                {/* <a href="">
+                <a href={`/profile/bid-history/${userId}`}>
                     <p>Bid History</p>
                 </a>
-                <a href="">
+                {/* <a href="">
                     <p>My Comments</p>
                 </a>
                 <a href="">
@@ -123,7 +123,7 @@ export default function Page() {
                     <div className="sub-header">
                         <p>Notifications</p>
                     </div> */}
-                    <Button style={{fontSize:'15pt'}}href={'/'}onClick={handleSignOut}>Sign Out</Button>
+                    <Button style={{fontSize:'15pt'}}href={'/login'}onClick={handleSignOut}>Sign Out</Button>
                 </div>
             </div>
         </div>

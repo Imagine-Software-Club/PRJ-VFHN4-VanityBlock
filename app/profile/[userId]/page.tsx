@@ -104,10 +104,10 @@ export default function Page() {
                 <a href={`/profile/${userId}`}>
                     <p>Profile</p>
                 </a>
-                {/* <a href="">
+                <a href={`/profile/bid-history/${userId}`}>
                     <p>Bid History</p>
                 </a>
-                <a href="">
+                {/* <a href="">
                     <p>My Comments</p>
                 </a>
                 <a href="">
