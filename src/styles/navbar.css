@@ -87,3 +87,8 @@
         opacity: 1;
     }
 }
+
+.signup-login-icons {
+    display: flex;
+    flex-direction: row;
+}

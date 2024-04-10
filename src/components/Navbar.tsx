@@ -46,21 +46,21 @@ const Navbar = () => {
             <a href="/notifications">
               <img src="/images/notifications.png" alt="Notifications" className="nav-icon" width={30} height={30} />
             </a> */}
-            <a href="/signup">
-              <img src="/images/signup.png" alt="Signup" width={75} height={15} />
-            </a>
-
-            <a href="/login">
-              <img src="/images/login-button.png" alt="Signup" width={75} height={60} />
-            </a>
+            
             {userActive ? (
               <a href={`/profile/${userId}`}>
                 <img src="/images/pfp-icon.png" alt="pfp" width={30} height={30}/>
               </a>
             ): 
-              <a href="/signup">
-                <img src="/images/signup.png" alt="Signup" className="nav-icon" width={75} height={45} />
-              </a>
+              <div className="signup-login-icons">
+                <a href="/signup">
+                  <img src="/images/signup.png" alt="Signup" width={75} height={15} />
+                </a>
+
+                <a href="/login">
+                  <img src="/images/login-button.png" alt="Signup" width={75} height={60} />
+                </a>
+              </div>
             }
           </div>
           <div className="menu-icon">
