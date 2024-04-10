@@ -10,6 +10,7 @@ import InfoButton from "@/src/components/InfoButton";
 import clockIcon from "@/public/images/blue_clock.png";
 import blueHammer from "@/public/images/blue_hammer.png";
 import bidIcon from "@/public/images/bid-icon.png";
+import CommentSection from "@/src/components/CommentSection";
 
 
 
@@ -59,6 +60,7 @@ return(
   <div className="container">
       <div className="listing-info">
           <div className="main-content">
+            <CommentSection listingId={"6Fd9KOAGyWA0X2vATDAA"} />
               <div className="info">
                   <div className="title">
                     <p>{state}</p> 
