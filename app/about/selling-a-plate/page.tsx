@@ -1,6 +1,7 @@
 import React from "react";
 import SideBar from "@/src/components/SideBar";
 import './selling.css';
+import CommentSection from "@/src/components/CommentSection";
 
 export default function SellPage() {
   return (
@@ -29,6 +30,7 @@ export default function SellPage() {
                 Engage and answer questions in the comment section.          
             </p>
         </div>
+        <CommentSection listingId={"6Fd9KOAGyWA0X2vATDAA"} />
         </main>
       </div>
   );

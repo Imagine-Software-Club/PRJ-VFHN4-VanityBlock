@@ -137,6 +137,7 @@ const theme = createTheme({
 
 export default function MainMenuHeader( {onSearch} ) {
     const [searchInput, setSearchInput] = useState('');
+  
     const [time, setTime] = useState('Live Auctions');
     const [state, setState] = useState('All');
     const [sort, setSort] = useState('Ending Soon');

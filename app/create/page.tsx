@@ -25,20 +25,44 @@ export default function Create() {
         description: "",
         flaws: "",
         price: "",
-        postInfo: ""
+        postInfo: "",
+        picture: []
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target; 
-        setFormData({
-            ...formData, // Spread the existing formValues
-            [name]: value // Update the value for the specific input name
-        });
+        const { name, value, type, files } = e.target;
+        if (type === "file") {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                picture: {
+                    ...prevFormData.picture,
+                    [name]: files[0]
+                }
+            }));
+        }
+        else{
+            setFormData({
+                ...formData, // Spread the existing formValues
+                [name]: value // Update the value for the specific input name
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission behavior
-    
+
+        const formDataToSend = new FormData();
+        for (const key in formData) {
+            if (formData[key] instanceof File) {
+                formDataToSend.append(key, formData[key]);
+            }
+            else{
+                formDataToSend.append(key, JSON.stringify(formData[key]));
+            }
+        }
+
+        console.log(formData);
+
         try {
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
                 if (user) {
@@ -193,6 +217,41 @@ export default function Create() {
                             as well as close ups of any known flaws or exceptional details. To achieve 
                             the best photo results, put the plate on a blank white background in the 
                             center of the frame.</p>
+                    </div>
+                    <div className="photos">
+                        <div className="inputs">
+                            <div className="label">
+                                <p>Front</p>
+                            </div>
+                            <input
+                                name="front_image"
+                                type="file"
+                                className="image_box"
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="inputs">
+                            <div className="label">
+                                <p>Back</p>
+                            </div>
+                            <input
+                                name="back_image"
+                                type="file"
+                                className="image_box"
+                                onChange={handleChange}
+                                />
+                        </div>
+                        <div className="inputs">
+                            <div className="label">
+                                <p>Flaws_Details</p>
+                            </div>
+                            <input
+                                name="flaws_image"
+                                type="file"
+                                className="image_box"
+                                onChange={handleChange}
+                                />
+                        </div>
                     </div>
                 </div>
                 <div className="information">

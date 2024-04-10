@@ -14,6 +14,7 @@ import { debug } from "console";
 import { socket } from "../../socket";
 import CurrentBid from "@/src/components/CurrentBid";
 import { Container } from "postcss";
+import CommentSection from "@/src/components/CommentSection";
 
 export default function ListingPage() {
   const [listingData, setListingData] = useState({});
@@ -68,6 +69,8 @@ export default function ListingPage() {
   
     fetchData();
   }, [listingId]);
+
+
   
   useEffect(() => {
     socket.emit("join_room", { listingID: listingId });
@@ -224,6 +227,10 @@ export default function ListingPage() {
       bidsCount={21}
     />
     </center>
+    <CommentSection listingId={listingId}/>
+
+
+
 
     <br></br>
     <br></br>

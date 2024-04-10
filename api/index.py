@@ -76,6 +76,7 @@ def fetch_listings_by_query(query: str, time: str, state: str, sort: str):
         if doc.exists:
             this_event = doc.to_dict()
             print(this_event["stateIssued"])
+
             if (query is None or query in this_event["title"]) and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
                 print("First level reached")
                 print(time)
@@ -117,13 +118,12 @@ def get_all_listing():
             result.append(this_event)
         else:
             print("Document does not exist!")
-
-    
     return {"Listings": result}
 
-@app.get("/profile")
-def get_user():
-    user = db.collection('User').document('98NBZNOEtHOX3Vs9neNUEQWOUDI2')
+@app.get("/profile/{userId}")
+def get_user(userId):
+
+    user = db.collection('User').document(userId)
     doc = user.get()
     return doc.to_dict()
 
@@ -153,6 +153,7 @@ class Listing(BaseModel):
     bids: list[str] = []
     price: str = "1"
     uid: str = ""
+    comments: list[any] = []
 
 @app.post("/listings")
 async def create_listing(listing: Listing, request: Request, token: str = Depends(oauth2_scheme)):
@@ -180,7 +181,22 @@ async def create_listing(listing: Listing, request: Request, token: str = Depend
     print("got here")
     
     return {"message": "Listing created successfully", "id": doc_ref.id}
-    
+
+class Bio(BaseModel):
+    bio: str
+
+@app.post("/profile/{userId}")
+def update_bio(userId, bio: Bio):
+    print("here")
+    try:
+        doc_ref_user = db.collection('User').document(userId)
+
+        doc_ref_user.update({
+            "Bio": bio.bio
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 class Bid(BaseModel):
     amount : float
     listing: str
@@ -229,7 +245,62 @@ async def bid_placed(sid, data):
     
     room = data["listingID"]
     await sio.emit('update_bid', {'price': data["amount"]}, room=room)
+
+class Comment(BaseModel):
+    user: str
+    timeDate: datetime
+    like: bool
+    dislike: bool
+    listing: str
+    replies: List[any] = []
+    text: str
+
+
+@app.get("/comments")
+async def get_all_comments():
+    try:
+        comments_ref = db.collection('Comments')
+        comments_query = comments_ref.stream()
+        comments = []
+        for comment in comments_query:
+            comment_dict = comment.to_dict()
+            comment_dict['id'] = comment.id 
+            comments.append(comment_dict)
+        return comments
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
+@app.get("/listings/{listing_id}/comments")
+async def get_comments_by_listing(listing_id: str):
+    try:
+        comments_ref = db.collection('Comments').where('listing', '==', listing_id)
+        comments_query = comments_ref.stream()
+        comments = []
+        for comment in comments_query:
+            comment_dict = comment.to_dict()
+            comment_dict['id'] = comment.id  
+            comments.append(comment_dict)
+        return comments
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/comments/add")  
+async def post_comment(comment: Comment, token: str = Depends(oauth2_scheme)):
+    try:
+        new_comment_ref = db.collection('Comments').document()
+        comment_data = comment.model_dump()
+
+        comment_data['timeDate'].now(datetime.UTC)
+        new_comment_ref.set(comment_data)
+
+        listing_ref = db.collection('Listings').document(comment.listing)
+        listing_ref.update({"comments": firestore.ArrayUnion([new_comment_ref.id])})
+
+        return {"message": "Comment posted successfully", "id": new_comment_ref.id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
