@@ -17,7 +17,7 @@ import { BorderColor } from "@mui/icons-material";
 
 export default function MainMenuHeader( {onSearch} ) {
     const [searchInput, setSearchInput] = useState('');
-    const [state,setState] = useState('');
+    const [state,setState] = useState('All');
     const handleChange = (e) => {
         //Updates search value
         setSearchInput(e.target.value);
