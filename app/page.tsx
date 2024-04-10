@@ -15,34 +15,35 @@ async function getAllListings() {
   return res.json();
 }
 
-async function FilterListings(searchInput,state) {
-  
-    console.log(state);
-    const res = await fetch(`http://localhost:8000/listings/filtered?query=${encodeURIComponent(searchInput)}&state=${encodeURIComponent(state)}`);
-    if (!res.ok) {
-      throw new Error("Failed to fetch filtered data");
-    }
-
-    return res.json();
-    
+async function SearchListings(searchInput, time, state, sort) {
+  console.log(searchInput)
+  console.log(time)
+  console.log(state);
+  console.log(sort);
+  const res = await fetch(`http://localhost:8000/listings/filtered?query=${encodeURIComponent(searchInput)}&time=${encodeURIComponent(time)}&state=${encodeURIComponent(state)}&sort=${encodeURIComponent(sort)}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch filtered data");
+  }
+  console.log(res);
+  return res.json();  
 }
 
 const Homepage = () => {
-  
+
   const [allListings, setAllListings] = useState([]);
-
-  //Added
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
-
-  const [searchVal,setSearchVal]  = useState("");
-  const [stateVal,setStateVal]    = useState("All");
-  const onSearch = async (searchInput,state) => {
+  const [searchVal,setSearchVal] = useState("");
+  const [timeVal, setTimeVal] = useState("Live Auctions");
+  const [stateVal,setStateVal] = useState("All");
+  const [sortVal, setSortVal] = useState("Ending Soon");
+  
+  const onSearch = async (searchInput, time, state, sort) => {
     setIsSearchTriggered(true);
     setSearchVal(searchInput);
+    setTimeVal(time);
     setStateVal(state);
-
-    console.log(searchVal);
-
+    setSortVal(sort);
+    // console.log(searchVal);
   };
 
   useEffect(() => {
@@ -53,25 +54,23 @@ const Homepage = () => {
         console.log(upcomingData);
         setAllListings(upcomingData["Listings"]);
       } else {
-        const upcomingData = await FilterListings(searchVal,stateVal);
+        const upcomingData = await SearchListings(searchVal, timeVal, stateVal, sortVal);
         console.log(upcomingData);
-
         setAllListings(upcomingData["Listings"]);
       }
-
     };
     fetchData();
-  }, [isSearchTriggered,searchVal,stateVal]);
+  }, [isSearchTriggered, searchVal, timeVal, stateVal, sortVal]);
 
   return (
     <center>
       <Box>
-        <MainMenuHeader onSearch={onSearch} />
+        <MainMenuHeader onSearch = {onSearch}/>
         <br /><br />
         <Grid container spacing={4} justifyContent="center">
           {allListings.map((listing, index) => (
             // Adjust grid sizing here for responsive behavior
-            <Grid key={index} item xs={12} sm={6} md={4}>
+            <Grid key={index} xs={12} sm={6} md={4}>
               <ListingCard
                 name={listing["plateNumber"]}
                 endTime={listing["endTime"]}
