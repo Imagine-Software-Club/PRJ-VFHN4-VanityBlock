@@ -1,22 +1,19 @@
 from fastapi import FastAPI, Response, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from datetime import datetime, timedelta
+from datetime import tzinfo, datetime, timedelta
+from zoneinfo import ZoneInfo
 from typing import Optional
 
 from fastapi.middleware.cors import CORSMiddleware
 from google.cloud.firestore import ArrayUnion
 
 import firebase_admin
-
 from firebase_admin import credentials, firestore, auth
 
 from fastapi import status, Response, Request
 from fastapi.responses import JSONResponse
 import requests
-
-
-
 
 from pydantic import BaseModel
 from typing import List
@@ -32,38 +29,45 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
-
 cred = credentials.Certificate('./api/credentials.json')
 
 sio = AsyncServer(async_mode='asgi', cors_allowed_origins=["http://localhost:3000"])
-
 socket_app = ASGIApp(sio, app)
 
-
-
 firebase_admin.initialize_app(cred)
-
 db = firestore.client()
 
-
-
 user_id = 0
-
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+ZERO = timedelta(0)
+ONE = timedelta(hours = 1)
+FIVE = timedelta(hours = -5)
+
+class EST(tzinfo):
+  def utcoffset(self, dt):
+    return FIVE
+  def tzname(self, dt):
+    return "EST"
+  def dst(self, dt):
+    return ONE
+
+est = EST()
 
 
 @app.get("/listings/filtered")
-def filtered_search(query: Optional[str] = None,state: Optional[str] = "All"):
-    logging.info(f"Query parameter received: {query}")
-    
-    
-    filtered_listings = fetch_listings_by_query(query,state)
-    
-    return {"Listings":filtered_listings}
- 
+def filtered_search(query: Optional[str] = None, time: Optional[str] = "Live Auctions", state: Optional[str] = "All", sort: Optional[str] = "Ending Soon"):
+    logging.info(f"Query parameter received: {query}, {time}, {state}, {sort}")
+    filtered_listings = fetch_listings_by_query(query, time, state, sort)
+    return {"Listings": filtered_listings}
 
-def fetch_listings_by_query(query: str,state: str):
+def sort_by_ending_soon(element):
+    return element["endTime"].replace(tzinfo = est)
+
+def sort_by_lowest_bid(element):
+    return element["price"]
+
+def fetch_listings_by_query(query: str, time: str, state: str, sort: str):
     result = []
 
     user = db.collection('Listings')
@@ -72,16 +76,30 @@ def fetch_listings_by_query(query: str,state: str):
         if doc.exists:
             this_event = doc.to_dict()
             print(this_event["stateIssued"])
-            if query is None:
-                this_event["id"] = doc.id
-                result.append(this_event)
-            elif query.lower() in this_event["title"].lower() and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
-                this_event["id"] = doc.id
-                result.append(this_event)
+
+            if (query is None or query in this_event["title"]) and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
+                print("First level reached")
+                print(time)
+                if time == "Past Auctions":
+                    print("Second level reached")
+                    this_event["id"] = doc.id
+                    result.append(this_event)
+                elif time == "Live Auctions" and this_event["endTime"].replace(tzinfo = est) > datetime.now(est):
+                    print("Second level reached")
+                    this_event["id"] = doc.id
+                    result.append(this_event)
                 
         else:
             print("Document does not exist!")
 
+    if sort == "Ending Soon":
+        result.sort(key = sort_by_ending_soon)
+    elif sort == "Ending Last":
+        result.sort(reverse = True, key = sort_by_ending_soon)
+    elif sort == "Lowest Bid":
+        result.sort(key = sort_by_lowest_bid)
+    elif sort == "Highest Bid":
+        result.sort(reverse = True, key = sort_by_lowest_bid)
 
     return result
 
@@ -147,7 +165,7 @@ async def create_listing(listing: Listing, request: Request, token: str = Depend
     listing_data = listing.model_dump()
 
     # Explicitly set price and endTime
-    listing_data["endTime"] = datetime.now() + timedelta(days=7)
+    listing_data["endTime"] = datetime.now(est) + timedelta(days = 7)
     listing_data["price"] = int(listing_data["price"])
     
     if listing_data["picture"] == []:
@@ -191,23 +209,18 @@ class Bid(BaseModel):
 def create_data(bid: Bid):
     try:
         doc_ref = db.collection('Bid').document()
-        
         doc_ref.set(bid.model_dump())
 
         doc_ref_user = db.collection('User').document(bid.user)
-
         doc_ref_user.update({
             "bids": ArrayUnion([doc_ref.id])
         })
 
         doc_ref_listing = db.collection('Listings').document(bid.listing)
-
         doc_ref_listing.update({
             "bids": ArrayUnion([doc_ref.id]),
             "price": bid.amount
         })
-
-        
 
         return {"message": "Listing created successfully", "id": doc_ref.id}
     
