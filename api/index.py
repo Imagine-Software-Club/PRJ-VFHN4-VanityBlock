@@ -135,6 +135,7 @@ class Listing(BaseModel):
     bids: list[str] = []
     price: str = "1"
     uid: str = ""
+    comments: list[any] = []
 
 @app.post("/listings")
 async def create_listing(listing: Listing, request: Request, token: str = Depends(oauth2_scheme)):
@@ -231,7 +232,62 @@ async def bid_placed(sid, data):
     
     room = data["listingID"]
     await sio.emit('update_bid', {'price': data["amount"]}, room=room)
+
+class Comment(BaseModel):
+    user: str
+    timeDate: datetime
+    like: bool
+    dislike: bool
+    listing: str
+    replies: List[any] = []
+    text: str
+
+
+@app.get("/comments")
+async def get_all_comments():
+    try:
+        comments_ref = db.collection('Comments')
+        comments_query = comments_ref.stream()
+        comments = []
+        for comment in comments_query:
+            comment_dict = comment.to_dict()
+            comment_dict['id'] = comment.id 
+            comments.append(comment_dict)
+        return comments
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
+@app.get("/listings/{listing_id}/comments")
+async def get_comments_by_listing(listing_id: str):
+    try:
+        comments_ref = db.collection('Comments').where('listing', '==', listing_id)
+        comments_query = comments_ref.stream()
+        comments = []
+        for comment in comments_query:
+            comment_dict = comment.to_dict()
+            comment_dict['id'] = comment.id  
+            comments.append(comment_dict)
+        return comments
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/comments/add")  
+async def post_comment(comment: Comment, token: str = Depends(oauth2_scheme)):
+    try:
+        new_comment_ref = db.collection('Comments').document()
+        comment_data = comment.model_dump()
+
+        comment_data['timeDate'].now(datetime.UTC)
+        new_comment_ref.set(comment_data)
+
+        listing_ref = db.collection('Listings').document(comment.listing)
+        listing_ref.update({"comments": firestore.ArrayUnion([new_comment_ref.id])})
+
+        return {"message": "Comment posted successfully", "id": new_comment_ref.id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
