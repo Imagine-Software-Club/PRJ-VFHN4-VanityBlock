@@ -46,14 +46,15 @@ const Navbar = () => {
             <a href="/notifications">
               <img src="/images/notifications.png" alt="Notifications" className="nav-icon" width={30} height={30} />
             </a>
-            <a href="/signup">
-              <img src="/images/signup.png" alt="Signup" className="nav-icon" width={75} height={45} />
-            </a>
             {userActive ? (
               <a href={`/profile/${userId}`}>
                 <img src="/images/pfp-icon.png" alt="pfp" width={30} height={30}/>
               </a>
-            ): null}
+            ): 
+              <a href="/signup">
+                <img src="/images/signup.png" alt="Signup" className="nav-icon" width={75} height={45} />
+              </a>
+            }
           </div>
           <div className="menu-icon">
             <button type="button" className="Menu-Icon" onClick={toggleMenu}>

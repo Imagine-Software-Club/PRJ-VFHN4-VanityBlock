@@ -143,4 +143,9 @@ textarea:focus {
     color:white;
     border-radius: 5pt;
     float: right;
+    transition-duration: 200ms;
+}
+
+.submit-button:hover {
+    opacity: 90%
 }

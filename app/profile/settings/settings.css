@@ -45,3 +45,8 @@
 .change-email-password-button {
     cursor: pointer;
 }
+
+.user-email-password {
+    color: #292970;
+    font-weight: normal;
+}
