@@ -74,7 +74,24 @@ export default function Page() {
         }
         
         setFormData(userData.Bio);
+        setOpen(false);
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/profile/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
 
+                const data = await response.json();
+                setUserData(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
       }
 
     const [open, setOpen] = React.useState(false);
@@ -84,10 +101,10 @@ export default function Page() {
     return (
         <div className="container">
             <div className="side-bar">
-                <a href="/profile">
+                <a href={`/profile/${userId}`}>
                     <p>Profile</p>
                 </a>
-                <a href="">
+                {/* <a href="">
                     <p>Bid History</p>
                 </a>
                 <a href="">
@@ -95,8 +112,8 @@ export default function Page() {
                 </a>
                 <a href="">
                     <p>My Listings</p>
-                </a>
-                <a href="/profile/settings">
+                </a> */}
+                <a href={`/profile/settings/${userId}`}>
                     <p>Settings</p>
                 </a>
                 
@@ -131,6 +148,7 @@ export default function Page() {
                                 onClose={handleClose}
                                 aria-labelledby="modal-modal-title"
                                 aria-describedby="modal-modal-description"
+                                style={{outline:'none'}}
                             >
                                 <Box className="bio-modal">
                                     <form className="bio-form">
@@ -138,7 +156,7 @@ export default function Page() {
                                         <textarea onChange={handleChange} name="bio" className="bio-input" 
                                         defaultValue = {userData.Bio}
                                         />
-                                        <button type="button" onClick={handleSubmit}>Submit</button>
+                                        <button type="button" onClick={handleSubmit} className="submit-button">Save</button>
                                     </form>
                                 </Box>
                             </Modal>
@@ -154,10 +172,11 @@ export default function Page() {
                 </div>
                 <div className="auction-history">
                     <p>Plates Auctioned</p>
-                    <ListingCard
-                        name={'Bruh'}
-                    />
-                    
+                    {userData && 'listings' in userData ? (
+                        <ul className="display-listings">{userData.listings.map((id)=><a href={`/listings/${id}`} key={id.toString()}>{id}</a>)}</ul>
+                    ) : (
+                        <p className="display-listings">No Listings</p>
+                    )}
                 </div>
             </div>
         </div>

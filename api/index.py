@@ -108,6 +108,12 @@ def get_user(userId):
     user = db.collection('User').document(userId)
     doc = user.get()
     return doc.to_dict()
+@app.get("/profile/settings/{userId}")
+def get_user(userId):
+
+    user = db.collection('User').document(userId)
+    doc = user.get()
+    return doc.to_dict()
 
 @app.get("/listings/{listingId}")
 def get_listing(listingId):

@@ -51,7 +51,7 @@ export default function Page() {
                 <a href="/profile">
                     <p>Profile</p>
                 </a>
-                <a href="">
+                {/* <a href="">
                     <p>Bid History</p>
                 </a>
                 <a href="">
@@ -59,7 +59,7 @@ export default function Page() {
                 </a>
                 <a href="">
                     <p>My Listings</p>
-                </a>
+                </a> */}
                 <a href="/profile/settings">
                     <p>Settings</p>
                 </a>

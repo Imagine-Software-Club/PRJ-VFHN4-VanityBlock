@@ -5,22 +5,26 @@ import '@/app/profile/css/profile.css';
 import '@/app/profile/settings/settings.css';
 import registerButton from "@/public/images/register-to-bid.png";
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
+import Button from '@mui/material/Button';
+import { signOut, getAuth, updateEmail } from "firebase/auth";
+import {auth} from "@/app/layout";
 
 export default function Page() {
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const { userId } = useParams(); 
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/profile`);
+                const response = await fetch(`http://localhost:8000/profile/settings/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
 
                 const data = await response.json();
-                console.log(data);
                 setUserData(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -30,11 +34,43 @@ export default function Page() {
             }
         };
         fetchData();
-    })
+    }, [])
+
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+            console.log('User signed out');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const handleChangeEmail = () => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/auth.user
+            // ...
+            updateEmail(auth.currentUser, "user@example.com").then(() => {
+                // Email updated!
+                // ...
+                }).catch((error) => {
+                // An error occurred
+                // ...
+                });
+          } else {
+            // No user is signed in.
+          }
+        
+    }
+    
+
     return (
         <div className="container">
             <div className="side-bar">
-                <a href="/profile">
+                <a href={`/profile/${userId}`}>
                     <p>Profile</p>
                 </a>
                 {/* <a href="">
@@ -46,7 +82,7 @@ export default function Page() {
                 <a href="">
                     <p>My Listings</p>
                 </a> */}
-                <a href="/profile/settings">
+                <a href={`/profile/settings/${userId}`}>
                     <p>Settings</p>
                 </a>
                 
@@ -67,14 +103,18 @@ export default function Page() {
                             ) : (
                                 <p>No Email Found</p>
                             )}
-                            <p>p******d</p>
+                            {userData && 'Password' in userData ? (
+                                <p>{userData.Password[0]}{"*".repeat(10)}{userData.Password.slice(-1)}</p>
+                            ) : (
+                                <p>No Password Found</p>
+                            )}
                         </div>
                         <div className="change-email-password">
-                            <p>Change Email</p>
-                            <p>Change Password</p>
+                            <p className="change-email-password-button"onClick={handleChangeEmail}>Change Email</p>
+                            <p className="change-email-password-button">Change Password</p>
                         </div>
                     </div>
-                    <div className="sub-header">
+                    {/* <div className="sub-header">
                         <p>Payment</p>
                     </div>
                     <div className="info-row">
@@ -82,7 +122,8 @@ export default function Page() {
                     </div>
                     <div className="sub-header">
                         <p>Notifications</p>
-                    </div>
+                    </div> */}
+                    <Button style={{fontSize:'15pt'}}href={'/'}onClick={handleSignOut}>Sign Out</Button>
                 </div>
             </div>
         </div>

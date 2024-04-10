@@ -41,3 +41,7 @@
     width: 10%;
     aspect-ratio: 3 / 1;
 }
+
+.change-email-password-button {
+    cursor: pointer;
+}

@@ -1,7 +1,26 @@
+"use client";
+import React from "react";
 import Link from "next/link";
 import "@/src/styles/navbar.css";
+import {  getAuth, onAuthStateChanged } from "firebase/auth";
+import {auth} from "@/app/layout";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [userActive, setUserActive] = useState(false)
+  const [userId, setUserId] = useState("")
+  const unsubscribe = onAuthStateChanged(auth, user => {
+    if (user) {
+      const uid = user.uid;
+      console.log(`User ID: ${uid}`);
+      setUserActive(true)
+      setUserId(uid)
+    } else {
+      console.log('No user is signed in.');
+      setUserActive(false)
+      setUserId("")
+    }
+  });
   return (
     <nav className="navbar">
       <div className="nav">
@@ -25,6 +44,11 @@ const Navbar = () => {
             <a href="/signup">
               <img src="/images/signup.png" alt="Signup" className="nav-icon" width={75} height={45} />
             </a>
+            {userActive ? (
+              <a href={`/profile/${userId}`}>
+                <img src="/images/pfp-icon.png" alt="pfp" width={30} height={30}/>
+              </a>
+            ): null}
           </div>
           <div className="menu-icon">
             <img src="/images/menu.png" alt="Menu" className="nav-icon" width={50} height={50} />
