@@ -109,10 +109,10 @@ export default function Page() {
                                 <p>No Password Found</p>
                             )}
                         </div>
-                        <div className="change-email-password">
+                        {/* <div className="change-email-password">
                             <p className="change-email-password-button"onClick={handleChangeEmail}>Change Email</p>
                             <p className="change-email-password-button">Change Password</p>
-                        </div>
+                        </div> */}
                     </div>
                     {/* <div className="sub-header">
                         <p>Payment</p>

@@ -58,7 +58,7 @@ const Navbar = () => {
                 </a>
 
                 <a href="/login">
-                  <img src="/images/login-button.png" alt="Signup" width={75} height={60} />
+                  <img src="/images/login-button.png" alt="Signup" width={240} height={15} />
                 </a>
               </div>
             }
