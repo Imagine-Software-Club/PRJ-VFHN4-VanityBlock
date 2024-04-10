@@ -51,11 +51,19 @@ const CommentSection = ({ listingId }) => {
       console.error("User not authenticated");
       return;
     }
+    const authToken = user.getIdToken;
+  
+    if (!authToken) {
+      console.error("No auth token available");
+      return;
+    }
+  
     try {
       const response = await fetch(`http://localhost:8000/comments/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${authToken}', // Add the Authorization header here
         },
         body: JSON.stringify({
           ...newComment,
@@ -68,15 +76,18 @@ const CommentSection = ({ listingId }) => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setComments(currentComments => [...currentComments, data]);
     } catch (error) {
       console.error("Error posting comment:", error);
     }
   };
+  
 
   return (
     <div className="comment-section">
-      <div className="title-container">
+      <br></br>
+      <br></br>
+      <br></br>
+      {/* <div className="title-container">
         <div className="content-title"> Comments and Bids</div>
         <div className="filter-container">
           <div className="filters"> Newest |</div>
@@ -85,7 +96,7 @@ const CommentSection = ({ listingId }) => {
           <div className="filters"> Seller Replies |</div>
           <div className="filters"> Bid History</div>
         </div>
-      </div>
+      </div> */}
       <div className="add-comment">
         <form onSubmit={handleCommentSubmit}>
           <input
