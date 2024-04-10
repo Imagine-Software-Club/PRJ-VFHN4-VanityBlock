@@ -75,7 +75,7 @@ def fetch_listings_by_query(query: str,state: str):
             if query is None:
                 this_event["id"] = doc.id
                 result.append(this_event)
-            elif query in this_event["title"] and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
+            elif query.lower() in this_event["title"].lower() and (state.lower() == (this_event["stateIssued"]).lower() or state == "All"):
                 this_event["id"] = doc.id
                 result.append(this_event)
                 
@@ -100,8 +100,6 @@ def get_all_listing():
             result.append(this_event)
         else:
             print("Document does not exist!")
-
-    
     return {"Listings": result}
 
 @app.get("/profile/{userId}")

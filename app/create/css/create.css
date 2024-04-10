@@ -103,6 +103,15 @@
     color: black;
     text-align: center;
 }
+.photos {
+    margin-top: 2vh;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+}
+.image_box{
+    height: 14vh;
+}
 
 textarea {
     font-size: small;
