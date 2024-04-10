@@ -92,6 +92,7 @@ export default function Create() {
                         // Handle error
                     }
                 } else {
+                    alert("Please Sign In")
                     console.log('No user is signed in.');
                 }
             });

@@ -26,14 +26,18 @@ const Navbar = () => {
         </a>
         <div className="rightImages">
           <div className="links">
-            <a href="/comments">
+            {/* <a href="/comments">
               <img src="/images/comments.png" alt="Comments" className="nav-icon" width={30} height={30} />
             </a>
             <a href="/notifications">
               <img src="/images/notifications.png" alt="Notifications" className="nav-icon" width={30} height={30} />
-            </a>
+            </a> */}
             <a href="/signup">
-              <img src="/images/signup.png" alt="Signup" className="nav-icon" width={75} height={45} />
+              <img src="/images/signup.png" alt="Signup" width={75} height={15} />
+            </a>
+
+            <a href="/login">
+              <img src="/images/login-button.png" alt="Signup" width={75} height={60} />
             </a>
           </div>
           <div className="menu-icon">
@@ -45,14 +49,12 @@ const Navbar = () => {
         <div className={`menu-overlay ${showMenu ? "show" : ""}`}>
           <nav>
             <ul id="menu_nav">
-              <li> 
-                <a href="/comments"> Comments </a>
-              </li>
-              <li> 
-                <a href="/notifications"> Notifications </a>
-              </li>
+              
               <li> 
                   <a href="/signup"> Signup </a>
+              </li>
+              <li> 
+                  <a href="/login"> Login </a>
               </li>
             </ul>
                     
