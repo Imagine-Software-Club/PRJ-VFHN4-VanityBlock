@@ -104,9 +104,10 @@ def get_all_listing():
     
     return {"Listings": result}
 
-@app.get("/profile")
-def get_user():
-    user = db.collection('User').document('98NBZNOEtHOX3Vs9neNUEQWOUDI2')
+@app.get("/profile/{userId}")
+def get_user(userId):
+
+    user = db.collection('User').document(userId)
     doc = user.get()
     return doc.to_dict()
 
@@ -163,7 +164,22 @@ async def create_listing(listing: Listing, request: Request, token: str = Depend
     print("got here")
     
     return {"message": "Listing created successfully", "id": doc_ref.id}
-    
+
+class Bio(BaseModel):
+    bio: str
+
+@app.post("/profile/{userId}")
+def update_bio(userId, bio: Bio):
+    print("here")
+    try:
+        doc_ref_user = db.collection('User').document(userId)
+
+        doc_ref_user.update({
+            "Bio": bio.bio
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 class Bid(BaseModel):
     amount : float
     listing: str

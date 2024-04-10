@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import '@/app/profile/css/profile.css';
 import Image from 'next/image';
 import pfp from "@/public/images/founder.png";
@@ -14,9 +14,12 @@ import { useParams } from 'next/navigation';
 
 
 export default function Page() {
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [formData, setFormData] = useState({
+        bio:""
+    })
 
     const { userId } = useParams(); 
 
@@ -29,7 +32,6 @@ export default function Page() {
                 }
 
                 const data = await response.json();
-                console.log(data);
                 setUserData(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -40,6 +42,40 @@ export default function Page() {
         };
         fetchData();
     }, [])
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+
+        console.log(formData)
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(formData)
+        try {
+            const res = await fetch(`http://localhost:8000/profile/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!res.ok) {
+                throw Error('Failed to post event');
+            }
+        } catch (error) {
+
+            console.error("error");
+        }
+        
+        setFormData(userData.Bio);
+
+      }
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -97,7 +133,13 @@ export default function Page() {
                                 aria-describedby="modal-modal-description"
                             >
                                 <Box className="bio-modal">
-                                    <p>Edit Bio</p>
+                                    <form className="bio-form">
+                                        <p>Add a Bio</p>
+                                        <textarea onChange={handleChange} name="bio" className="bio-input" 
+                                        defaultValue = {userData.Bio}
+                                        />
+                                        <button type="button" onClick={handleSubmit}>Submit</button>
+                                    </form>
                                 </Box>
                             </Modal>
                         </div>
