@@ -242,6 +242,7 @@ export default function MainMenuHeader( {onSearch} ) {
                         sx={sx_select}
                     >
                         <MenuItem value={"State"} disabled>State</MenuItem>
+                        <MenuItem value={"All"}>All</MenuItem>
                         <MenuItem value={"New York"}>New York</MenuItem>
                         <MenuItem value={"California"}>California</MenuItem>
                         <MenuItem value={"Michigan"}>Michigan</MenuItem>
