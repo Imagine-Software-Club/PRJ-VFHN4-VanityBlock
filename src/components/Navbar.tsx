@@ -7,8 +7,13 @@ import {auth} from "@/app/layout";
 import { useState } from "react";
 
 const Navbar = () => {
+  const [showMenu, setShowMenu] = useState(false);
   const [userActive, setUserActive] = useState(false)
   const [userId, setUserId] = useState("")
+
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
   const unsubscribe = onAuthStateChanged(auth, user => {
     if (user) {
       const uid = user.uid;
@@ -51,9 +56,29 @@ const Navbar = () => {
             ): null}
           </div>
           <div className="menu-icon">
-            <img src="/images/menu.png" alt="Menu" className="nav-icon" width={50} height={50} />
+            <button type="button" className="Menu-Icon" onClick={toggleMenu}>
+              <img src="/images/menu.png" alt="Menu" className="nav-icon" width={50} height={50} />
+            </button>
           </div>
         </div>
+        <div className={`menu-overlay ${showMenu ? "show" : ""}`}>
+          <nav>
+            <ul id="menu_nav">
+              <li> 
+                <a href="/comments"> Comments </a>
+              </li>
+              <li> 
+                <a href="/notifications"> Notifications </a>
+              </li>
+              <li> 
+                  <a href="/signup"> Signup </a>
+              </li>
+            </ul>
+                    
+          </nav>
+        </div>
+
+        
       </div>
     </nav>
   );
